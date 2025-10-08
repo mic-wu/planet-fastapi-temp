@@ -16,7 +16,7 @@ jobs:
       ACCESS_SECRET_KEY: ${{ secrets.ACCESS_SECRET_KEY }}
       RESET_PASSWORD_SECRET_KEY: ${{ secrets.RESET_PASSWORD_SECRET_KEY }}
       VERIFICATION_SECRET_KEY: ${{ secrets.VERIFICATION_SECRET_KEY }}
-      CORS_ORIGINS: ${{ secrets.CORS_ORIGINS }}
+      CORS_ORIGINS: ${{ secrets.CORS_ORIGINS || 'http://localhost:3000' }}
 
     services:
       postgres:
@@ -59,6 +59,7 @@ jobs:
           flag-name: python-coverage
           parallel: true
           path-to-lcov: fastapi_backend/coverage.xml
+        continue-on-error: true
 
   build-frontend:
     name: Next.js CI
@@ -94,6 +95,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           flag-name: node-coverage
           parallel: true
+        continue-on-error: true
 
   finish:
 
@@ -109,3 +111,4 @@ jobs:
         with:
           parallel-finished: true
           carryforward: "python-coverage,node-coverage"
+        continue-on-error: true
