@@ -7,117 +7,131 @@ Planet Story Explorer is an interactive web portal that transforms a static gall
 ## Technical Stack
 
 ### Frontend
-- **Framework**: React
-- **Language**: JavaScript/TypeScript
-- Use modern React practices (hooks, functional components)
-- Follow React best practices for component structure and state management
+- Framework: Next.js (React 18+)
+- Language: TypeScript (strict mode)
+- Routing: App Router with file-based routes in `app/`
+- Components:
+  - Prefer React Server Components by default
+  - Mark Client Components explicitly with `"use client"`
+- Data Fetching:
+  - Use `fetch`/server actions where applicable
+  - Use a data fetching library (e.g., React Query) for client-side server state where needed
+- Styling: Template default (e.g., Tailwind CSS); follow the template’s lint/config
+- Lint/Format: ESLint + Prettier (use template configs)
+- Environment variables:
+  - Public variables must be prefixed with `NEXT_PUBLIC_`
+  - Keep `.env.local` untracked for local-only secrets
+- Dev URLs (default):
+  - Web: http://localhost:3000
 
 ### Backend
-- **Framework**: FastAPI
-- **Language**: Python
-- Use Python 3.8+ features
-- Follow PEP 8 style guidelines
-- Implement async/await patterns for API endpoints
-- Use type hints for function signatures
+- Framework: FastAPI
+- Language: Python 3.10+
+- Async-first endpoints with type hints
+- Schemas: Pydantic (v2) models for requests/responses
+- Project structure: split into `routers/`, `schemas/`, `services/`, `core/`, `deps/`, `utils/`
+- Server: Uvicorn/Gunicorn as configured by the template
+- Dev URLs (default):
+  - API: http://localhost:8000
+- OpenAPI/Docs: Auto-generated at `/docs` and `/openapi.json`
+
+### Infrastructure/Dev Experience
+- Containerization: Docker + Docker Compose (web, api, and optional db/cache services as defined in the template)
+- Task runners/shortcuts: Use Makefile/dev scripts provided by the template
+- Pre-commit: Enable hooks (lint/format/security checks) where configured
 
 ### AI/ML Components
-- **Visual Large Language Model (VLLM)**: For image analysis and caption generation
-- **Gemini Deep Research**: For contextual enrichment
-- Handle AI model responses gracefully with error handling
-- Implement retry logic for external API calls
+- Visual LLM for image analysis and caption generation
+- Contextual enrichment via external research APIs
+- Handle model/API responses with robust error handling and timeouts
+- Implement retry/backoff for external calls
 
 ## Coding Standards
 
-### General Guidelines
-- Write clean, maintainable, and well-documented code
-- Add docstrings for all functions, classes, and modules
-- Include type annotations where applicable
-- Use meaningful variable and function names
+### General
+- Prefer clear, maintainable, and well-documented code
+- Type annotations:
+  - TypeScript: enable `strict` and fix type errors proactively
+  - Python: add type hints; enforce with mypy/pyright if configured
+- Use meaningful names and small, focused functions
+- Keep code consistent with template lint rules (ESLint, Ruff/Flake8, Black/Prettier)
 
-### Frontend (React)
-- Component files should be organized by feature
-- Use PropTypes or TypeScript interfaces for component props
-- Keep components small and focused on a single responsibility
+### Frontend (Next.js)
+- Organize by feature and co-locate components, hooks, and tests
+- Server Components by default; Client Components only when necessary
 - Extract reusable logic into custom hooks
-- Use CSS modules or styled-components for styling
+- Avoid global state unless justified; prefer server data + localized state
+- Follow accessibility best practices (semantics, ARIA as needed)
 
-### Backend (Python/FastAPI)
-- Organize code into clear modules (routes, models, services, utils)
-- Use Pydantic models for request/response validation
-- Implement proper error handling with appropriate HTTP status codes
-- Write async functions for I/O-bound operations
-- Use environment variables for configuration
-- Follow RESTful API design principles
+### Backend (FastAPI)
+- Keep routers small and cohesive; separate business logic into services
+- Use Pydantic models for validation and serialization
+- Return precise HTTP status codes and structured error responses
+- Async I/O for DB/API calls
+- Configuration via environment variables (12-factor)
 
 ### API Design
-- Use clear and consistent endpoint naming (e.g., `/api/v1/stories`)
-- Return appropriate HTTP status codes
-- Include comprehensive error messages in responses
-- Implement pagination for list endpoints
-- Add API documentation using FastAPI's automatic OpenAPI generation
+- Base path: `/api/v1/...`
+- Consistent resource naming
+- Pagination for list endpoints
+- Error responses include machine-readable codes and helpful messages
+- Document endpoints via FastAPI (tags, descriptions, examples)
 
-### Testing
-- Write unit tests for business logic
-- Write integration tests for API endpoints
-- Aim for high test coverage (80%+)
-- Use pytest for Python tests
-- Use Jest and React Testing Library for frontend tests
+## Testing
 
-### Security
-- Never commit API keys, credentials, or secrets
-- Use environment variables for sensitive configuration
-- Validate and sanitize all user inputs
-- Implement rate limiting for API endpoints
-- Use HTTPS for all external communications
+### Frontend
+- Unit tests: Vitest or Jest (as per template) + React Testing Library
+- E2E tests: Playwright (recommended)
+- Aim for meaningful coverage and test critical flows
 
-### Performance
-- Optimize database queries to avoid N+1 problems
-- Implement caching for frequently accessed data
-- Use pagination for large datasets
-- Optimize images and assets for web delivery
-- Monitor and log performance metrics
+### Backend
+- Unit/integration tests: pytest
+- HTTP layer tests: httpx/AsyncClient with FastAPI TestClient
+- Use factories/fixtures for data; isolate external services
+
+## Security
+- Never commit secrets; use `.env` files and secret managers
+- Validate and sanitize inputs on both client and server
+- Configure CORS via the reverse proxy/API settings as per template
+- Rate limit sensitive endpoints where appropriate
+- Use HTTPS in all non-local environments
+
+## Performance
+- Next.js: leverage Image Optimization and caching headers
+- Avoid unnecessary client-side JS; prefer RSC/SSR/SSG where appropriate
+- Backend: index queries, avoid N+1, add caching for hot paths
+- Monitor logs and metrics; track latency and error rates
 
 ## Data Pipeline
+Automated enrichment pipeline:
+1. Daily ingest of new stories
+2. AI-generated captions
+3. Geospatial context augmentation
+4. Data store update
 
-The automated content enrichment pipeline:
-1. Daily ingests new stories
-2. Enriches content with AI-generated captions
-3. Adds geospatial context
-4. Updates the data store
-
-When working on the pipeline:
-- Ensure idempotent operations
-- Implement proper logging
-- Handle failures gracefully with retry mechanisms
-- Monitor data quality
+Guidelines:
+- Idempotent operations
+- Structured logging and trace IDs
+- Retry with exponential backoff; dead-letter on persistent failures
+- Data quality checks and alerts
 
 ## Team Collaboration
-
-Team members:
-- Andrew Zhang
-- Michael Wu
-- Junjie Liu
-- Yixuan Wong
-- Shiyuan Wang
-
-When contributing:
-- Create feature branches from main
-- Write descriptive commit messages
-- Keep pull requests focused and small
-- Request reviews from team members
-- Update documentation with code changes
+- Feature branches from `main`
+- Descriptive, scoped commits
+- Small, focused pull requests with clear context
+- Request reviews from relevant owners
+- Update documentation as part of changes
 
 ## Dependencies
-
-- Keep dependencies up to date but test thoroughly before updating
-- Document the purpose of new dependencies
-- Use virtual environments for Python development
-- Lock dependency versions in requirements.txt or package.json
+- Keep dependencies up to date via template’s toolchain
+  - JavaScript: lockfile maintained (npm/yarn/pnpm as per template)
+  - Python: Poetry/pip-tools or requirements.txt (as per template)
+- Document rationale for new dependencies
+- Use virtual environments (Python) and node version managers as needed
 
 ## Documentation
-
-- Update README.md when adding new features
-- Document API endpoints thoroughly
-- Include setup instructions for new developers
+- Keep README.md updated (setup, run, deploy)
+- Document API endpoints via OpenAPI and usage examples
+- Include environment setup and onboarding steps
 - Add inline comments for complex logic
-- Maintain a CHANGELOG for version tracking
+- Maintain CHANGELOG or rely on release notes per template workflow
