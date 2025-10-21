@@ -17,6 +17,11 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
     }
   };
 
+  const resolution =
+    typeof story.story_metadata?.resolution === "string"
+      ? story.story_metadata.resolution
+      : undefined;
+
   return (
     <Card
       className="group cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
@@ -47,9 +52,9 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
             >
               {story.category}
             </Badge>
-            {story.story_metadata?.resolution && (
+            {resolution && (
               <span className="text-xs text-white/80">
-                {story.story_metadata.resolution}
+                {resolution}
               </span>
             )}
           </div>
