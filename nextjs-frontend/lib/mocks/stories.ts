@@ -140,11 +140,9 @@ function getFilterPredicate(
       return matchesCategory;
     }
 
-    const candidates = [
-      story.title,
-      story.location,
-      story.description,
-    ].filter(Boolean) as string[];
+    const candidates = [story.title, story.location, story.description].filter(
+      Boolean,
+    ) as string[];
 
     const matchesSearch = candidates
       .map((candidate) => candidate.toLowerCase())

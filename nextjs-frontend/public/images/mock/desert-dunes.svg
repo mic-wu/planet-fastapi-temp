@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs>
+    <linearGradient id="dunes" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4a261"/>
+      <stop offset="50%" stop-color="#e76f51"/>
+      <stop offset="100%" stop-color="#9c6644"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#dunes)" />
+  <text x="50%" y="82%" font-family="Inter, Arial, sans-serif" font-size="48" text-anchor="middle" fill="#ffffff" opacity="0.9">
+    Desert Dunes
+  </text>
+</svg>

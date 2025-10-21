@@ -23,5 +23,8 @@ export function searchStories(query: string, category?: string) {
   return resolveService().searchStories(query, category);
 }
 
-export type { StoriesQueryParams, StoriesService } from "@/lib/services/stories/types";
+export type {
+  StoriesQueryParams,
+  StoriesService,
+} from "@/lib/services/stories/types";
 export { storiesApiService, storiesMockService };
