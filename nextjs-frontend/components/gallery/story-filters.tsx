@@ -20,6 +20,10 @@ export function StoryFilters({
 }: StoryFiltersProps) {
   const [searchInput, setSearchInput] = useState(searchValue);
 
+  useEffect(() => {
+    setSearchInput(searchValue);
+  }, [searchValue]);
+
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {

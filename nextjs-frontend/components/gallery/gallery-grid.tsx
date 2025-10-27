@@ -7,6 +7,7 @@ import { GalleryPagination } from "./gallery-pagination";
 import { GalleryPageSize } from "./gallery-page-size";
 import { StoryRead, PaginatedResponse } from "@/app/openapi-client/types.gen";
 import { getStories } from "@/components/actions/stories-action";
+import { StoryModal } from "./story-modal";
 
 interface GalleryGridProps {
   initialData: PaginatedResponse;
@@ -23,6 +24,9 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedStory, setSelectedStory] = useState<StoryRead | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchStories = useCallback(
     async (
@@ -32,6 +36,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
       categoryFilter: string | null,
     ) => {
       setLoading(true);
+      setError(null);
       try {
         const response = await getStories({
           page,
@@ -49,6 +54,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
         });
       } catch (error) {
         console.error("Failed to fetch stories:", error);
+        setError("Something went wrong while fetching stories. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -58,8 +64,9 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
 
   const handleSearchChange = useCallback(
     (searchTerm: string) => {
-      setSearch(searchTerm);
-      fetchStories(1, pagination.limit, searchTerm, category);
+      const normalizedSearch = searchTerm.trim();
+      setSearch(normalizedSearch);
+      fetchStories(1, pagination.limit, normalizedSearch, category);
     },
     [fetchStories, pagination.limit, category],
   );
@@ -87,8 +94,13 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
   );
 
   const handleStoryClick = (story: StoryRead) => {
-    // TODO: Implement story detail view/modal
-    console.log("Story clicked:", story);
+    setSelectedStory(story);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedStory(null);
   };
 
   return (
@@ -101,10 +113,16 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
         categoryValue={category || "all"}
       />
 
+      {error && (
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
         </div>
       )}
 
@@ -161,6 +179,12 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
           )}
         </>
       )}
+
+      <StoryModal
+        open={isModalOpen}
+        story={selectedStory}
+        onClose={handleModalClose}
+      />
     </div>
   );
 }
