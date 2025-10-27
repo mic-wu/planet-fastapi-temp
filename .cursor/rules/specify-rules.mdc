@@ -1,0 +1,24 @@
+# PlanetStoryExplorer Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-10-20
+
+## Active Technologies
+- TypeScript 5.x (frontend), Python 3.12 (backend) + Next.js 15, React 19, FastAPI, SQLAlchemy, shadcn/ui (Radix UI), TailwindCSS (001-airbus-style-satellite)
+
+## Project Structure
+```
+src/
+tests/
+```
+
+## Commands
+cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] pytest [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] ruff check .
+
+## Code Style
+TypeScript 5.x (frontend), Python 3.12 (backend): Follow standard conventions
+
+## Recent Changes
+- 001-airbus-style-satellite: Added TypeScript 5.x (frontend), Python 3.12 (backend) + Next.js 15, React 19, FastAPI, SQLAlchemy, shadcn/ui (Radix UI), TailwindCSS
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

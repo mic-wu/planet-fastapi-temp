@@ -12,7 +12,15 @@ Build an Airbus-inspired satellite image gallery MVP with responsive grid, categ
 - Active effort is centered on frontend experience within `nextjs-frontend` (detail views, richer filters/search, gallery UX polish).  
 - Backend enhancements (e.g., Story API, migrations) are complete for this milestone and should move to a dedicated backend branch if further work is required.  
 - Adopt separate feature branches per surface area (`001-frontend-gallery-enhancements`, `001-backend-stories-api`, etc.) so revisions to API layers do not block UI delivery.  
-- Completed this iteration: full-screen story detail route under `/gallery/[storyId]`, modal deep-link button, client-side advanced filters (sensor + resolution), and promoted the gallery landing to `/` (with `/gallery` redirecting home).
+- Completed this iteration: full-screen story detail route under `/gallery/[storyId]`, modal deep-link button, client-side advanced filters (sensor + resolution), and promoted the gallery landing to `/` (with `/gallery` redirecting home).  
+- Next focus: elevate the story detail page to match Airbus-grade depth (hero stats, mission narrative, insights cards, data access CTAs, related imagery rail). Requires richer metadata extraction but keeps existing visual theme.
+
+## Story Detail Upgrade (In Progress)
+
+- Enrich hero band with KPI stats (resolution, capture time, sensor, revisit cadence) and CTA cluster (download, briefing request, share).  
+- Expand mission narrative with highlight bullet list sourced from metadata, alongside imagery insight cards summarising incident, mission data, and recommended actions.  
+- Introduce a data/access panel (download/contact/license/tags) plus mission context and raw metadata archive for power users.  
+- Surface related imagery via category-matched StoryCards to encourage exploration of adjacent captures.
 - Upcoming frontend backlog includes: richer search affordances (highlighted matches, saved filter presets), tab-level analytics badges, and progressive image loading states for slow networks.
 
 ## Technical Context
