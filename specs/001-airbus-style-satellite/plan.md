@@ -12,7 +12,7 @@ Build an Airbus-inspired satellite image gallery MVP with responsive grid, categ
 - Active effort is centered on frontend experience within `nextjs-frontend` (detail views, richer filters/search, gallery UX polish).  
 - Backend enhancements (e.g., Story API, migrations) are complete for this milestone and should move to a dedicated backend branch if further work is required.  
 - Adopt separate feature branches per surface area (`001-frontend-gallery-enhancements`, `001-backend-stories-api`, etc.) so revisions to API layers do not block UI delivery.  
-- Completed this iteration: full-screen story detail route under `/gallery/[storyId]`, modal deep-link button, and client-side advanced filters (sensor + resolution).
+- Completed this iteration: full-screen story detail route under `/gallery/[storyId]`, modal deep-link button, client-side advanced filters (sensor + resolution), and promoted the gallery landing to `/` (with `/gallery` redirecting home).
 - Upcoming frontend backlog includes: richer search affordances (highlighted matches, saved filter presets), tab-level analytics badges, and progressive image loading states for slow networks.
 
 ## Technical Context

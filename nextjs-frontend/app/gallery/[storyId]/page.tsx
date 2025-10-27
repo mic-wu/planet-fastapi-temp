@@ -59,10 +59,7 @@ export default async function StoryDetailPage({ params }: StoryPageParams) {
         <div className="container mx-auto flex flex-col gap-4 px-4 py-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Link
-                href="/gallery"
-                className="transition-colors hover:text-primary"
-              >
+              <Link href="/" className="transition-colors hover:text-primary">
                 Gallery
               </Link>
               <span>/</span>
@@ -81,7 +78,7 @@ export default async function StoryDetailPage({ params }: StoryPageParams) {
           <div className="flex items-center gap-2">
             <Badge className="uppercase">{story.category}</Badge>
             <Button variant="outline" asChild>
-              <Link href="/gallery">Back to gallery</Link>
+              <Link href="/">Back to gallery</Link>
             </Button>
           </div>
         </div>
