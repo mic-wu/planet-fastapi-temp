@@ -4,39 +4,21 @@ import type { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import Link from "next/link";
 import { X } from "lucide-react";
 
 import { StoryRead } from "@/app/openapi-client/types.gen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  formatMetadataKey,
+  formatMetadataValue,
+} from "@/components/gallery/story-metadata";
 
 interface StoryModalProps {
   story: StoryRead | null;
   open: boolean;
   onClose: () => void;
-}
-
-function formatMetadataKey(key: string): string {
-  return key
-    .split("_")
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(" ");
-}
-
-function formatMetadataValue(value: unknown): string {
-  if (value === null || value === undefined) {
-    return "N/A";
-  }
-
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (typeof value === "number" || typeof value === "boolean") {
-    return String(value);
-  }
-
-  return JSON.stringify(value, null, 2);
 }
 
 export function StoryModal({ story, open, onClose }: StoryModalProps) {
@@ -154,6 +136,20 @@ export function StoryModal({ story, open, onClose }: StoryModalProps) {
           <p className="text-base leading-relaxed text-muted-foreground">
             {story.description || "No description available for this story."}
           </p>
+
+          <div className="flex flex-wrap gap-3">
+            <Button
+              asChild
+              onClick={() => {
+                onClose();
+              }}
+            >
+              <Link href={`/gallery/${story.id}`}>Open detail page</Link>
+            </Button>
+            <Button variant="outline" onClick={onClose}>
+              Close
+            </Button>
+          </div>
 
           {metadataEntries.length > 0 && (
             <div className="space-y-3">

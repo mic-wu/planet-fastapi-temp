@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { StoryRead } from "@/app/openapi-client/types.gen";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface StoryCardProps {
@@ -13,6 +15,7 @@ interface StoryCardProps {
 
 export function StoryCard({ story, onClick }: StoryCardProps) {
   const [imageError, setImageError] = useState(false);
+  const router = useRouter();
 
   const handleClick = () => {
     onClick?.(story);
@@ -74,16 +77,26 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
           </div>
         </div>
       </div>
-      {story.description && (
-        <CardContent className="p-4">
+      <CardContent className="p-4 space-y-3">
+        {story.description && (
           <p
             className="line-clamp-2 text-sm text-muted-foreground"
             title={story.description}
           >
             {story.description}
           </p>
-        </CardContent>
-      )}
+        )}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={(event) => {
+            event.stopPropagation();
+            router.push(`/gallery/${story.id}`);
+          }}
+        >
+          View details
+        </Button>
+      </CardContent>
     </Card>
   );
 }
