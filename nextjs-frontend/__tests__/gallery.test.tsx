@@ -295,7 +295,9 @@ describe("Gallery Components", () => {
         />,
       );
 
-      await user.click(screen.getByRole("button", { name: /^Next$/i }));
+      await user.click(
+        screen.getByRole("button", { name: /view next story/i }),
+      );
 
       expect(handleChange).toHaveBeenCalledWith("second");
     });
