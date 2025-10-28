@@ -1,204 +1,295 @@
-# Quickstart: Airbus‑style Satellite Image Gallery MVP
+# Quickstart: Planet Labs Design System Implementation
 
 **Feature**: 001-airbus-style-satellite  
-**Last Updated**: 2025-10-21
+**Date**: 2025-01-27  
+**Purpose**: Quick implementation guide for Planet Labs design system alignment
 
-## Purpose
+## Overview
 
-Get the satellite image gallery feature running locally in <5 minutes.
-
----
+This guide provides step-by-step instructions for implementing Planet Labs' design system in the PlanetStoryExplorer application. The implementation focuses on color palette, typography, and component styling while maintaining existing functionality.
 
 ## Prerequisites
 
-- Docker Desktop running (for PostgreSQL database)
-- Node.js 20+ and pnpm installed
-- Python 3.12+ and uv installed
+- Node.js 18+ and pnpm installed
+- Next.js 14+ project structure
+- Tailwind CSS configured
+- shadcn/ui components installed
 
----
+## Implementation Steps
 
-## Setup Steps
+### 1. Update Color System
 
-### 1. Start the Database
+#### Step 1.1: Update Tailwind Config
 
-```bash
-cd /Users/andrewwang/Code/PlanetStoryExplorer
-docker-compose up -d db
+```javascript
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        // Planet Labs Brand Colors
+        'planet-teal': 'hsl(180 100% 32%)',        // rgb(0, 157, 165)
+        'planet-dark-teal': 'hsl(180 100% 30%)',   // rgb(0, 127, 153)
+        'planet-light-teal': 'hsl(180 100% 43%)',  // rgb(28, 190, 201)
+        'planet-blue': 'hsl(180 100% 45%)',        // rgb(0, 203, 230)
+        'planet-dark-blue': 'hsl(220 20% 14%)',    // rgb(26, 32, 44)
+        'planet-light-blue': 'hsl(210 50% 40%)',   // rgb(34, 116, 172)
+        
+        // Semantic Color Mapping
+        primary: 'hsl(var(--primary))',
+        'primary-foreground': 'hsl(var(--primary-foreground))',
+        secondary: 'hsl(var(--secondary))',
+        'secondary-foreground': 'hsl(var(--secondary-foreground))',
+        accent: 'hsl(var(--accent))',
+        'accent-foreground': 'hsl(var(--accent-foreground))',
+      }
+    }
+  }
+}
 ```
 
-Verify database is running:
+#### Step 1.2: Update Global CSS
 
-```bash
-docker ps | grep postgres
+```css
+/* app/globals.css */
+:root {
+  /* Planet Brand Colors */
+  --planet-teal: 180 100% 32%;
+  --planet-dark-teal: 180 100% 30%;
+  --planet-light-teal: 180 100% 43%;
+  --planet-blue: 180 100% 45%;
+  --planet-dark-blue: 220 20% 14%;
+  --planet-light-blue: 210 50% 40%;
+  
+  /* Semantic Color Mapping */
+  --primary: var(--planet-teal);
+  --primary-foreground: 0 0% 98%;
+  --secondary: var(--planet-dark-blue);
+  --secondary-foreground: 0 0% 98%;
+  --accent: var(--planet-blue);
+  --accent-foreground: var(--planet-dark-blue);
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --background: 0 0% 100%;
+  --foreground: var(--planet-dark-blue);
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: var(--planet-teal);
+}
 ```
 
-### 2. Run Backend Migration
+### 2. Update Typography
 
-```bash
-cd fastapi_backend
+#### Step 2.1: Add Font Imports
 
-# Set environment variables (adjust for your local setup)
-export DATABASE_URL="postgresql+asyncpg://postgres:password@localhost:5432/mydatabase"
-export ACCESS_SECRET_KEY="test-secret-key"
-export RESET_PASSWORD_SECRET_KEY="test-reset-key"
-export VERIFICATION_SECRET_KEY="test-verification-key"
+```tsx
+// app/layout.tsx
+import localFont from 'next/font/local'
 
-# Run migration to create stories table
-uv run alembic upgrade head
+const montserrat = localFont({
+  src: [
+    { path: './fonts/Montserrat-Regular.woff2', weight: '400' },
+    { path: './fonts/Montserrat-Medium.woff2', weight: '500' },
+    { path: './fonts/Montserrat-SemiBold.woff2', weight: '600' },
+    { path: './fonts/Montserrat-Bold.woff2', weight: '700' },
+  ],
+  variable: '--font-montserrat',
+})
 
-# Seed database with placeholder stories
-uv run python seed_stories.py
+const gotham = localFont({
+  src: './fonts/GothamSSm-Book.woff2',
+  variable: '--font-gotham',
+})
 ```
 
-### 3. Start the Backend
+#### Step 2.2: Update Font Classes
 
-```bash
-# From fastapi_backend directory
-uv run uvicorn app.main:app --reload
+```tsx
+// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={`${montserrat.variable} ${gotham.variable} font-montserrat`}>
+        {children}
+      </body>
+    </html>
+  )
+}
 ```
 
-Backend should be running at `http://localhost:8000`.
+### 3. Update Component Styling
 
-Verify API:
+#### Step 3.1: Update Button Component
 
-```bash
-curl http://localhost:8000/api/stories/ | jq
+```tsx
+// components/ui/button.tsx
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-lg font-medium transition-all",
+  {
+    variants: {
+      variant: {
+        primary: "bg-planet-teal text-white hover:bg-planet-dark-teal",
+        secondary: "bg-planet-blue text-planet-dark-blue hover:bg-planet-light-teal",
+        outline: "border-2 border-planet-teal text-planet-teal hover:bg-planet-teal hover:text-white",
+        ghost: "hover:bg-planet-light-teal hover:text-planet-dark-blue",
+        link: "text-planet-teal underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-12 rounded-lg px-8 text-lg",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "default",
+    },
+  }
+)
 ```
 
-### 4. Generate TypeScript Client
+#### Step 3.2: Update Card Component
 
-```bash
-cd ../nextjs-frontend
-
-# Regenerate OpenAPI schema from backend
-cd ../fastapi_backend
-uv run python -m commands.generate_openapi_schema
-
-# Copy to frontend and generate TypeScript client
-cd ../nextjs-frontend
-cp ../local-shared-data/openapi.json .
-OPENAPI_OUTPUT_FILE=./openapi.json pnpm run generate-client
+```tsx
+// components/ui/card.tsx
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-xl border border-gray-200 bg-white text-planet-dark-blue shadow-sm hover:shadow-md transition-shadow",
+        className
+      )}
+      {...props}
+    />
+  )
+)
 ```
 
-### 5. Start the Frontend
+### 4. Update Hero Section
 
-```bash
-# From nextjs-frontend directory
-pnpm install
-pnpm dev
+```tsx
+// app/page.tsx
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="bg-gradient-to-br from-planet-dark-blue via-planet-teal to-planet-blue text-white">
+        <div className="container mx-auto px-4 py-24">
+          <div className="max-w-4xl">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 font-montserrat">
+              Planet Story Explorer
+            </h1>
+            <p className="text-xl text-planet-light-teal mb-8 font-gotham">
+              Discover Earth through satellite imagery
+            </p>
+            <p className="text-planet-light-teal/80">
+              Switch between optical and radar imagery, search by location, and
+              explore rich metadata from our satellites.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="container mx-auto px-4 py-8">
+        <GalleryGrid initialData={initialData} />
+      </div>
+    </div>
+  )
+}
 ```
 
-Frontend should be running at `http://localhost:3000`.
+### 5. Font Preloading
 
----
+```tsx
+// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/Montserrat-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/GothamSSm-Book.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body className={`${montserrat.variable} ${gotham.variable} font-montserrat`}>
+        {children}
+      </body>
+    </html>
+  )
+}
+```
 
-## Test the Feature
+## Testing
 
-1. **Browse Gallery**:
-   - Navigate to `http://localhost:3000/gallery`
-   - Confirm 12 images load in a responsive grid
+### Visual Regression Testing
 
-2. **Filter by Category**:
-   - Click "Optical" tab → only optical images shown
-   - Click "Radar" tab → only radar images shown
-   - Click "All" → all images shown
+```bash
+# Run existing tests
+pnpm test
 
-3. **Search**:
-   - Type "tokyo" in search box
-   - Grid updates to show matching stories only
+# Run visual regression tests (if configured)
+pnpm test:visual
 
-4. **Pagination**:
-   - If more than 12 stories exist, click "Next" button
-   - Confirm page 2 loads with next set of items
+# Check color contrast
+pnpm test:accessibility
+```
 
-5. **View Modal**:
-   - Click any story card
-   - Modal opens with larger image and metadata
-   - Press ESC or click close button to dismiss
+### Manual Testing Checklist
 
----
+- [ ] All buttons use Planet color scheme
+- [ ] Cards have Planet styling
+- [ ] Typography matches Planet fonts
+- [ ] Hero section has Planet gradient
+- [ ] Responsive design maintained
+- [ ] Accessibility standards met
+- [ ] Performance not degraded
 
 ## Troubleshooting
 
-**Database connection error**:
+### Common Issues
 
-- Ensure Docker is running: `docker ps`
-- Check DATABASE_URL environment variable matches docker-compose.yml
+1. **Fonts not loading**: Check font file paths and preload links
+2. **Colors not applying**: Verify Tailwind config and CSS custom properties
+3. **Layout shifts**: Ensure font preloading is working
+4. **Accessibility issues**: Test color contrast ratios
 
-**Migration fails**:
+### Debug Commands
 
-- Verify database is empty or run `uv run alembic downgrade base` to reset
-- Check alembic_migrations/versions/ for migration files
+```bash
+# Check Tailwind compilation
+pnpm build
 
-**TypeScript errors in frontend**:
+# Check font loading
+pnpm dev
+# Open browser dev tools → Network → Fonts
 
-- Regenerate client: `OPENAPI_OUTPUT_FILE=./openapi.json pnpm run generate-client`
-- Restart Next.js dev server
-
-**Images not loading**:
-
-- Check `seed_stories.py` placeholder URLs are valid
-- Verify `thumbnail_url` and `image_url` fields in database
-
-**Search/filter not working**:
-
-- Check browser console for JavaScript errors
-- Verify API endpoint returns data: `curl http://localhost:8000/api/stories/?search=tokyo`
-
----
+# Check color contrast
+# Use browser dev tools accessibility panel
+```
 
 ## Next Steps
 
-- Add more placeholder stories via `POST /api/stories/`
-- Customize styling in `app/gallery/page.tsx` and `components/gallery/*`
-- Integrate with Planet.com API for real story data
-- Add tests: `pnpm test` (frontend), `uv run pytest` (backend)
+After completing this implementation:
 
----
+1. Run comprehensive tests
+2. Update documentation
+3. Deploy to staging environment
+4. Conduct user testing
+5. Deploy to production
 
-## Useful Commands
+## Resources
 
-```bash
-# Backend
-uv run pytest                          # Run backend tests
-uv run alembic revision --autogenerate # Create new migration
-uv run python -m commands.generate_openapi_schema  # Regenerate OpenAPI schema
-
-# Frontend
-pnpm test                              # Run frontend tests
-pnpm lint                              # Check linting errors
-pnpm run generate-client               # Regenerate TypeScript client
-
-# Database
-docker-compose up -d db                # Start database
-docker-compose down                    # Stop all services
-docker-compose logs db                 # View database logs
-```
-
----
-
-## File Locations
-
-**Backend**:
-
-- Models: `fastapi_backend/app/models.py`
-- Routes: `fastapi_backend/app/routes/stories.py`
-- Schemas: `fastapi_backend/app/schemas.py`
-- Tests: `fastapi_backend/tests/routes/test_stories.py`
-- Seed script: `fastapi_backend/seed_stories.py`
-
-**Frontend**:
-
-- Gallery page: `nextjs-frontend/app/gallery/page.tsx`
-- Components: `nextjs-frontend/components/gallery/*`
-- Actions: `nextjs-frontend/components/actions/stories-action.ts`
-- Tests: `nextjs-frontend/__tests__/gallery.test.tsx`
-- Generated client: `nextjs-frontend/app/openapi-client/*`
-
-**Spec Documents**:
-
-- Specification: `specs/001-airbus-style-satellite/spec.md`
-- Plan: `specs/001-airbus-style-satellite/plan.md`
-- Data Model: `specs/001-airbus-style-satellite/data-model.md`
-- API Contract: `specs/001-airbus-style-satellite/contracts/stories-api.yaml`
-
+- [Planet Labs Website](https://www.planet.com/)
+- [Montserrat Font](https://fonts.google.com/specimen/Montserrat)
+- [Tailwind CSS Colors](https://tailwindcss.com/docs/customizing-colors)
+- [shadcn/ui Components](https://ui.shadcn.com/)

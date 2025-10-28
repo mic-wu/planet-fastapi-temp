@@ -1,204 +1,198 @@
-# Data Model: Airbus‑style Satellite Image Gallery MVP
+# Data Model: Planet Labs Design System Alignment
 
 **Feature**: 001-airbus-style-satellite  
-**Phase**: 1 (Design & Contracts)  
-**Date**: 2025-10-21
+**Date**: 2025-01-27  
+**Purpose**: Define data structures for Planet Labs design system implementation
 
-## Purpose
+## Design Tokens
 
-Define the data entities, attributes, relationships, and validation rules for the satellite image gallery feature.
+### Color Palette
 
----
-
-## Entities
-
-### Story (Image Item)
-
-Represents a single satellite image/story with associated metadata for gallery display.
-
-**Attributes**:
-
-| Field | Type | Required | Description | Validation |
-|-------|------|----------|-------------|------------|
-| `id` | UUID | Yes | Unique identifier | Auto-generated (primary key) |
-| `story_id` | String | Yes | External/Planet API story ID | Unique, non-empty, max 255 chars |
-| `title` | String | Yes | Story/image title | Non-empty, max 255 chars |
-| `location` | String | No | Geographic location (e.g., "Tokyo, Japan") | Max 255 chars |
-| `description` | Text | No | Detailed description of the story | Max 2000 chars |
-| `thumbnail_url` | String (URL) | No | Small image URL for grid (400x300 recommended) | Valid URL format |
-| `image_url` | String (URL) | No | Full-size image URL for modal (1200x800+ recommended) | Valid URL format |
-| `category` | Enum | Yes | Image category | Must be one of: `optical`, `radar` |
-| `story_metadata` | JSON | No | Additional metadata (resolution, satellite, coordinates, etc.) | Valid JSON object |
-| `created_at` | DateTime | Yes | Timestamp when story was added | Auto-generated |
-| `updated_at` | DateTime | Yes | Timestamp of last update | Auto-updated |
-| `user_id` | UUID (FK) | No | Optional reference to User (for future auth) | Foreign key to User.id |
-
-**Indexes**:
-
-- Primary key: `id`
-- Unique constraint: `story_id`
-- Index on `category` (for filtering)
-- Index on `created_at DESC` (for ordering)
-
-**Example**:
-
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "story_id": "tokyo-urban-expansion-2024",
-  "title": "Tokyo Urban Expansion",
-  "location": "Tokyo, Japan",
-  "description": "High-resolution satellite imagery showing Tokyo's urban development...",
-  "thumbnail_url": "https://images.unsplash.com/photo-123/thumb.jpg",
-  "image_url": "https://images.unsplash.com/photo-123/full.jpg",
-  "category": "optical",
-  "story_metadata": {
-    "resolution": "30cm",
-    "satellite": "Pléiades Neo",
-    "date_captured": "2024-01-15",
-    "coordinates": { "lat": 35.6762, "lng": 139.6503 }
-  },
-  "created_at": "2025-10-21T10:00:00Z",
-  "updated_at": "2025-10-21T10:00:00Z",
-  "user_id": null
+```typescript
+interface PlanetColorPalette {
+  // Primary Brand Colors
+  teal: string;           // rgb(0, 157, 165) - Main brand color
+  darkTeal: string;       // rgb(0, 127, 153) - Hover states
+  lightTeal: string;      // rgb(28, 190, 201) - Accent elements
+  
+  // Secondary Brand Colors
+  blue: string;           // rgb(0, 203, 230) - Secondary brand
+  darkBlue: string;       // rgb(26, 32, 44) - Text/dark backgrounds
+  lightBlue: string;      // rgb(34, 116, 172) - Medium accent
+  
+  // Neutral Colors
+  white: string;          // rgb(255, 255, 255) - Backgrounds
+  lightGray: string;      // rgb(246, 246, 244) - Light backgrounds
+  mediumGray: string;     // rgb(105, 105, 105) - Muted text
+  darkGray: string;       // rgb(26, 32, 44) - Primary text
 }
 ```
 
----
+### Typography Scale
 
-### FilterState (Client-side only - not persisted)
-
-Represents the current gallery view state for filtering, searching, and pagination.
-
-**Attributes**:
-
-| Field | Type | Required | Description | Default |
-|-------|------|----------|-------------|---------|
-| `category` | String | No | Selected category filter | `null` (shows all) |
-| `search` | String | No | Search term (title/location/description) | `""` (no search) |
-| `page` | Integer | Yes | Current page number | `1` |
-| `limit` | Integer | Yes | Items per page | `12` |
-
-**Validation**:
-
-- `category`: Must be `null`, `"optical"`, or `"radar"`
-- `search`: Max 255 chars
-- `page`: Min 1
-- `limit`: Min 1, max 100
-
-**Example**:
-
-```json
-{
-  "category": "optical",
-  "search": "tokyo",
-  "page": 2,
-  "limit": 12
+```typescript
+interface PlanetTypography {
+  // Font Families
+  primary: string;        // 'Montserrat, sans-serif'
+  secondary: string;      // '"Gotham SSm A", "Gotham SSm B", Montserrat, sans-serif'
+  fallback: string;       // 'Helvetica, Arial'
+  
+  // Font Weights
+  weights: {
+    regular: number;      // 400
+    medium: number;       // 500
+    semibold: number;     // 600
+    bold: number;         // 700
+  };
+  
+  // Font Sizes (rem)
+  sizes: {
+    xs: string;           // 0.75rem (12px)
+    sm: string;           // 0.875rem (14px)
+    base: string;         // 1rem (16px)
+    lg: string;           // 1.125rem (18px)
+    xl: string;           // 1.25rem (20px)
+    '2xl': string;        // 1.5rem (24px)
+    '3xl': string;        // 1.875rem (30px)
+    '4xl': string;        // 2.25rem (36px)
+    '5xl': string;        // 3rem (48px)
+    '6xl': string;        // 3.75rem (60px)
+  };
 }
 ```
 
----
+### Component Variants
 
-## Relationships
+```typescript
+interface ButtonVariants {
+  primary: {
+    background: string;   // Planet teal
+    color: string;        // White
+    hover: string;        // Dark teal
+  };
+  secondary: {
+    background: string;   // Planet blue
+    color: string;        // Dark blue
+    hover: string;        // Light teal
+  };
+  outline: {
+    background: string;   // Transparent
+    color: string;        // Planet teal
+    border: string;       // Planet teal
+    hover: string;        // Planet teal background
+  };
+}
 
-**Story → User** (Optional, for future):
+interface CardVariants {
+  default: {
+    background: string;   // White
+    border: string;       // Light gray
+    shadow: string;       // Subtle shadow
+  };
+  elevated: {
+    background: string;   // White
+    border: string;       // Light gray
+    shadow: string;       // More prominent shadow
+  };
+}
+```
 
-- `Story.user_id` → `User.id` (nullable foreign key)
-- One-to-many: One user can create many stories
-- For MVP: `user_id` is `null` (no authentication)
+## CSS Custom Properties
 
-**No other relationships in MVP scope.**
+```css
+:root {
+  /* Planet Brand Colors */
+  --planet-teal: 180 100% 32%;        /* rgb(0, 157, 165) */
+  --planet-dark-teal: 180 100% 30%;   /* rgb(0, 127, 153) */
+  --planet-light-teal: 180 100% 43%;  /* rgb(28, 190, 201) */
+  --planet-blue: 180 100% 45%;        /* rgb(0, 203, 230) */
+  --planet-dark-blue: 220 20% 14%;    /* rgb(26, 32, 44) */
+  --planet-light-blue: 210 50% 40%;   /* rgb(34, 116, 172) */
+  
+  /* Semantic Color Mapping */
+  --primary: var(--planet-teal);
+  --primary-foreground: 0 0% 98%;
+  --secondary: var(--planet-dark-blue);
+  --secondary-foreground: 0 0% 98%;
+  --accent: var(--planet-blue);
+  --accent-foreground: var(--planet-dark-blue);
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --background: 0 0% 100%;
+  --foreground: var(--planet-dark-blue);
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: var(--planet-teal);
+}
+```
 
----
+## Component State Management
 
-## State Transitions
-
-**Story Lifecycle** (simplified for MVP):
-
-1. **Created**: Story added to database (manual or API ingestion)
-2. **Updated**: Metadata modified (title, description, etc.)
-3. **Deleted**: Story removed (out of scope for MVP - no delete endpoint)
-
-**FilterState Transitions**:
-
-- User actions (tab click, search input, pagination) → Update FilterState → Fetch new data from API
-
----
-
-## Data Access Patterns
-
-### Read Patterns
-
-1. **Gallery Page Load** (P1 - most common):
-   - Query: `SELECT * FROM stories WHERE category = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`
-   - Indexes used: `category`, `created_at`
-   - Expected frequency: Every page load (high)
-
-2. **Search** (P2):
-   - Query: `SELECT * FROM stories WHERE (title ILIKE ? OR location ILIKE ? OR description ILIKE ?) ORDER BY created_at DESC LIMIT ? OFFSET ?`
-   - Full-text search on title, location, description
-   - Expected frequency: Moderate (user-initiated)
-
-3. **Single Story Detail** (P2):
-   - Query: `SELECT * FROM stories WHERE id = ?`
-   - Indexed lookup by primary key
-   - Expected frequency: When modal opens (moderate)
-
-### Write Patterns
-
-- **Create Story**: `INSERT INTO stories (...) VALUES (...)`
-- **Update Story**: `UPDATE stories SET ... WHERE id = ?`
-- MVP: No user-facing write operations (admin/ingestion only)
-
----
+```typescript
+interface ComponentState {
+  // Theme state
+  theme: 'light' | 'dark';
+  
+  // Font loading state
+  fontsLoaded: boolean;
+  
+  // Component variants
+  buttonVariant: 'primary' | 'secondary' | 'outline' | 'ghost';
+  cardVariant: 'default' | 'elevated';
+  
+  // Responsive state
+  breakpoint: 'mobile' | 'tablet' | 'desktop';
+}
+```
 
 ## Validation Rules
 
-### Backend (Pydantic Schemas)
+### Color Contrast
+- All text must meet WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
+- Primary teal on white: 4.8:1 ✅
+- Dark blue on white: 12.6:1 ✅
+- White on teal: 4.2:1 ✅
 
-**StoryCreate**:
+### Typography
+- Font sizes must be at least 16px for body text
+- Line height must be at least 1.5 for readability
+- Font weights must be available for all required variants
 
-- `story_id`: Required, unique, non-empty string
-- `title`: Required, non-empty string, max 255 chars
-- `category`: Required, enum (`optical` | `radar`)
-- `location`, `description`: Optional strings
-- `thumbnail_url`, `image_url`: Optional, valid URL format
-- `story_metadata`: Optional, valid JSON object
+### Responsive Design
+- Colors must be consistent across all breakpoints
+- Typography must scale appropriately
+- Components must maintain functionality at all screen sizes
 
-**StoryRead** (extends StoryCreate):
+## State Transitions
 
-- `id`: Auto-generated UUID
-- `created_at`, `updated_at`: Auto-generated timestamps
-- `user_id`: Nullable UUID
+### Font Loading
+```
+Initial → Loading → Loaded → Error (fallback)
+```
 
-### Frontend (TypeScript)
+### Theme Switching
+```
+Light Theme → Dark Theme (if implemented)
+```
 
-- Generated from OpenAPI schema via `openapi-ts`
-- Type-safe interfaces for `Story`, `PaginatedResponse`, `FilterState`
+### Component Hover States
+```
+Default → Hover → Active → Focus
+```
 
----
+## Integration Points
 
-## Performance Considerations
+### Tailwind CSS
+- Color values integrated into Tailwind config
+- Custom properties accessible via Tailwind utilities
+- Component variants using class-variance-authority
 
-1. **Indexes**: `category` and `created_at` are indexed for fast filtering and ordering
-2. **Pagination**: Offset-based pagination for MVP (simple, works well for <10K items)
-3. **Search**: ILIKE queries on indexed columns; consider full-text search (PostgreSQL `ts_vector`) if performance degrades
-4. **Image URLs**: Stored as strings (not blobs) to avoid database bloat; CDN/cloud storage handles images
-5. **Caching**: No caching for MVP; add Redis/HTTP caching if needed post-launch
+### shadcn/ui Components
+- Existing component API preserved
+- New variants added for Planet styling
+- Backward compatibility maintained
 
----
-
-## Migration Strategy
-
-1. **Initial Migration**: Create `stories` table with all columns and indexes
-2. **Seed Data**: Insert 5-10 placeholder stories for MVP demo (Unsplash images)
-3. **Future Migrations**: Add columns as needed (e.g., `published`, `featured`, `tags`)
-
----
-
-## Next Steps
-
-- Generate OpenAPI schema in `/contracts/`
-- Create backend migration (`alembic revision --autogenerate -m "add_story_model"`)
-- Seed database with placeholder data
-
+### Next.js Font System
+- Google Fonts integration
+- Font preloading for performance
+- Fallback font handling

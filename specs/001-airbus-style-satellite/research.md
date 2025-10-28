@@ -1,196 +1,153 @@
-# Research: Airbus‑style Satellite Image Gallery MVP
+# Research: Planet Labs Design System Alignment
 
 **Feature**: 001-airbus-style-satellite  
-**Phase**: 0 (Outline & Research)  
-**Date**: 2025-10-21
+**Date**: 2025-01-27  
+**Purpose**: Resolve technical clarifications for implementing Planet Labs design system
 
-## Purpose
+## Research Tasks
 
-Resolve technical unknowns and document technology choices, best practices, and patterns for implementing the satellite image gallery MVP.
+### 1. Planet Labs Color Palette Analysis
 
-## Research Tasks Completed
+**Task**: Research Planet Labs' exact color specifications and CSS implementation
 
-### 1. Frontend Framework & Component Strategy
+**Decision**: Use Planet Labs' signature teal/blue color palette with precise RGB/HSL values
 
-**Decision**: Use Next.js 15 (App Router) with React 19 Server Components + Client Components hybrid
+**Rationale**: 
+- Primary Teal: `rgb(0, 157, 165)` - Main brand color for primary actions
+- Dark Teal: `rgb(0, 127, 153)` - Hover states and emphasis
+- Light Teal: `rgb(28, 190, 201)` - Accent elements and highlights
+- Primary Blue: `rgb(0, 203, 230)` - Secondary brand color
+- Dark Blue: `rgb(26, 32, 44)` - Text and dark backgrounds
+- Light Blue: `rgb(34, 116, 172)` - Medium accent color
 
-**Rationale**:
+**Alternatives considered**: 
+- Generic teal colors (rejected - doesn't match Planet's exact brand)
+- Custom color palette (rejected - loses brand alignment)
 
-- Already established in the project (see `nextjs-frontend/package.json`)
-- Server Components for initial data fetching (gallery page load) provide optimal performance
-- Client Components for interactive elements (search, filters, pagination, modal)
-- Built-in routing, image optimization, and TypeScript support
+### 2. Typography Implementation
 
-**Alternatives Considered**:
+**Task**: Research Montserrat and Gotham font implementation in Next.js
 
-- Pure client-side React (rejected: worse SEO, slower initial load)
-- Static site generation only (rejected: requires rebuild for content updates)
-
-**Best Practices**:
-
-- Use `next/image` for automatic image optimization and lazy loading
-- Implement search/filter state with `useState` + `useCallback` to prevent re-renders
-- Debounce search input (300ms) to reduce API calls
-- Server Actions for data fetching (type-safe, no separate API client needed)
-
----
-
-### 2. UI Component Library & Styling
-
-**Decision**: Reuse existing shadcn/ui (Radix UI primitives) + TailwindCSS
+**Decision**: Use Montserrat as primary font with Gotham as secondary, implemented via Google Fonts
 
 **Rationale**:
+- Montserrat: Clean, modern sans-serif matching Planet's typography
+- Gotham: Professional secondary font for headings and emphasis
+- Google Fonts: Reliable CDN, good performance, easy Next.js integration
+- Fallback to system fonts for performance
 
-- Already integrated in the project (`components/ui/` directory)
-- Provides Card, Tabs, Input, Button, Badge components needed for gallery
-- Radix UI ensures accessibility (keyboard nav, ARIA, focus management)
-- TailwindCSS enables rapid responsive design with utility classes
+**Alternatives considered**:
+- Local font files (rejected - larger bundle size, maintenance overhead)
+- Other font combinations (rejected - doesn't match Planet's brand)
 
-**Alternatives Considered**:
+### 3. Tailwind CSS Color System Integration
 
-- Material-UI (rejected: heavier bundle, different design language)
-- Build from scratch (rejected: reinventing accessibility, slower)
+**Task**: Research best practices for integrating custom color palettes with Tailwind CSS
 
-**Best Practices**:
-
-- Use `Card` for story items with hover states
-- Use `Tabs` for category filters (All/Optical/Radar)
-- Use `Input` with search icon for text search
-- Implement modal with Radix `Dialog` or simple portal overlay
-- Mobile-first responsive: Tailwind breakpoints `sm:`, `md:`, `lg:`
-
----
-
-### 3. Backend API Design & Data Storage
-
-**Decision**: FastAPI REST API with PostgreSQL storage, following existing backend patterns
+**Decision**: Extend Tailwind config with Planet color variables using CSS custom properties
 
 **Rationale**:
+- CSS custom properties enable theme switching and maintainability
+- Tailwind's color system supports HSL values for better color manipulation
+- Maintains existing shadcn/ui component compatibility
+- Enables dark/light mode support if needed
 
-- FastAPI already established (`fastapi_backend/app/main.py`)
-- PostgreSQL database configured (`fastapi_backend/app/database.py`)
-- REST over GraphQL for simplicity (CRUD operations, no complex relationships)
-- SQLAlchemy ORM for type-safe database access
+**Alternatives considered**:
+- Hardcoded colors in Tailwind config (rejected - less flexible)
+- CSS-in-JS solution (rejected - adds complexity, not needed for this scope)
 
-**API Pattern**:
+### 4. Component Styling Strategy
 
-- `GET /api/stories/?page=1&limit=12&search=tokyo&category=optical`
-- Returns `{ data: Story[], total: number, page: number, limit: number, has_more: boolean }`
-- Uses query parameters for filtering, search, pagination (standard REST pattern)
+**Task**: Research approach for updating shadcn/ui components with Planet styling
 
-**Alternatives Considered**:
-
-- GraphQL (rejected: overkill for simple CRUD, adds complexity)
-- Direct database access from frontend (rejected: security, no separation of concerns)
-
-**Best Practices**:
-
-- Use Pydantic schemas for request/response validation
-- Implement pagination with offset/limit (standard pattern)
-- Use SQL ILIKE for case-insensitive search (title, location, description)
-- Add database indexes on `category` and `created_at` for filter performance
-- Return 404 for missing stories, 400 for invalid parameters
-
----
-
-### 4. Image Handling & Placeholders
-
-**Decision**: Store URLs (thumbnail + full image), use Next.js Image component with fallback
+**Decision**: Override component variants using class-variance-authority and custom CSS
 
 **Rationale**:
+- Preserves existing component functionality and API
+- Allows gradual migration of components
+- Maintains TypeScript type safety
+- Enables component-specific customizations
 
-- MVP uses placeholder images (Unsplash or similar)
-- Storing URLs (not binary data) keeps database lightweight
-- Next.js `<Image>` handles optimization, lazy loading, responsive sizing
-- Graceful degradation with `onError` handler → placeholder image
+**Alternatives considered**:
+- Complete component replacement (rejected - too much work, breaks existing code)
+- CSS-only overrides (rejected - less maintainable, harder to manage variants)
 
-**Best Practices**:
+### 5. Performance Considerations
 
-- Use `next/image` with `fill` prop for flexible aspect ratios
-- Provide `placeholder="blur"` or skeleton while loading
-- Store separate `thumbnail_url` (400x300) and `image_url` (1200x800+)
-- Use `object-cover` CSS for consistent card sizing
-- Fallback to `/images/placeholder.jpg` on error (no layout shift)
+**Task**: Research performance impact of font loading and color system changes
 
----
-
-### 5. State Management & Data Fetching
-
-**Decision**: React Server Components for initial load + Client Components with local state for interactions
+**Decision**: Implement font preloading and optimize color system for minimal performance impact
 
 **Rationale**:
+- Font preloading reduces layout shift and improves perceived performance
+- CSS custom properties have minimal runtime cost
+- Color changes don't affect JavaScript bundle size
+- Maintains existing performance targets (<2s load, <1s interactions)
 
-- Server Components fetch initial data (12 stories on page load)
-- Client Components manage filter/search/pagination state (`useState`)
-- Server Actions for subsequent data fetches (type-safe, no separate API client)
-- No need for Redux/Zustand for this simple use case
+**Alternatives considered**:
+- Synchronous font loading (rejected - causes layout shift)
+- Inline critical CSS (rejected - not needed for color/font changes)
 
-**Data Flow**:
+### 6. Responsive Design Considerations
 
-1. Gallery page (Server Component) → fetch initial stories → pass to client component
-2. Client component manages `{ search, category, page, limit }` state
-3. State changes → call Server Action → update local state with new data
+**Task**: Research responsive design patterns for Planet Labs' visual style
 
-**Best Practices**:
-
-- Use `useCallback` for filter/search handlers to prevent re-renders
-- Debounce search input with `useEffect` + `setTimeout`
-- Show loading spinner during filter changes
-- Preserve scroll position after pagination (native browser behavior)
-
----
-
-### 6. Modal Implementation
-
-**Decision**: Client Component modal with portal overlay, triggered by card click
+**Decision**: Maintain existing responsive grid system with Planet's spacing and typography scales
 
 **Rationale**:
+- Planet's design is inherently responsive and mobile-first
+- Existing grid system works well with new color palette
+- Typography scales naturally across breakpoints
+- Maintains accessibility standards
 
-- Simple modal (image + metadata) doesn't require routing
-- Radix UI `Dialog` or custom portal overlay with focus trap
-- Escape key + close button for accessibility
-- Prevents body scroll when open
+**Alternatives considered**:
+- Complete responsive redesign (rejected - out of scope, existing system works)
+- Desktop-only design (rejected - violates accessibility requirements)
 
-**Best Practices**:
+## Technical Implementation Summary
 
-- Use `createPortal` to render modal at document root (avoid z-index issues)
-- Trap focus within modal while open
-- Restore focus to trigger element on close
-- Use `next/image` for larger image with priority loading
-- Add transition animation (fade in/out) for polish
+### Color System
+- Implement Planet's teal/blue palette as CSS custom properties
+- Extend Tailwind config to use Planet colors
+- Update all UI components to use new color variants
 
----
+### Typography
+- Add Montserrat and Gotham fonts via Google Fonts
+- Update font families in layout.tsx
+- Implement font preloading for performance
 
-## Technology Stack Summary
+### Components
+- Update button variants with Planet color scheme
+- Modify card components with Planet styling
+- Ensure all components maintain accessibility and functionality
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| Frontend Framework | Next.js | 15.5.0 | Server/Client rendering, routing |
-| Frontend Library | React | 19.1.1 | UI components |
-| UI Components | shadcn/ui (Radix) | Latest | Accessible primitives |
-| Styling | TailwindCSS | 3.4.x | Utility-first CSS |
-| Backend Framework | FastAPI | Latest | REST API |
-| Database | PostgreSQL | 17 | Story persistence |
-| ORM | SQLAlchemy | 2.0 | Type-safe DB access |
-| Testing (Frontend) | Jest + RTL | 29.x | Component tests |
-| Testing (Backend) | pytest | Latest | API tests |
+### Testing
+- Maintain existing test coverage
+- Add visual regression tests for color changes
+- Verify responsive behavior across breakpoints
 
----
+## Dependencies
 
-## Open Questions Resolved
+- Google Fonts API (for Montserrat and Gotham)
+- Existing Tailwind CSS and shadcn/ui setup
+- No new external dependencies required
 
-| Question | Answer | Rationale |
-|----------|--------|-----------|
-| Should modal be route-based or overlay? | Overlay (simpler, no routing needed) | MVP simplicity; routing can be added later for deep-linking |
-| How to handle missing images? | Placeholder image with `onError` | Graceful degradation, no layout shift |
-| Client-side or server-side pagination? | Server-side (API returns paginated data) | Scales better, reduces client bundle size |
-| Use existing pagination components? | Yes, adapt if needed | Reuse `PagePagination` and `PageSizeSelector` with callback props |
+## Risks and Mitigations
 
----
+**Risk**: Font loading causing layout shift
+**Mitigation**: Implement font preloading and fallback fonts
 
-## Next Steps
+**Risk**: Color contrast issues affecting accessibility
+**Mitigation**: Test all color combinations for WCAG compliance
 
-- Proceed to **Phase 1**: Create `data-model.md` and `/contracts/` OpenAPI schemas
-- Generate TypeScript client from OpenAPI schema
-- Update agent context with technology decisions
+**Risk**: Breaking existing component functionality
+**Mitigation**: Gradual migration with comprehensive testing
 
+## Success Criteria
+
+- All components use Planet Labs color palette
+- Typography matches Planet's design system
+- Performance maintained or improved
+- All existing tests pass
+- Responsive design preserved
+- Accessibility standards maintained
