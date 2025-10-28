@@ -30,6 +30,7 @@ export function GalleryPagination({
         size="sm"
         disabled={!hasPreviousPage}
         onClick={() => onPageChange(1)}
+        className="border-planet-teal text-planet-teal hover:bg-planet-teal hover:text-white disabled:border-gray-300 disabled:text-gray-400"
       >
         <DoubleArrowLeftIcon className="h-4 w-4" />
       </Button>
@@ -40,13 +41,14 @@ export function GalleryPagination({
         size="sm"
         disabled={!hasPreviousPage}
         onClick={() => onPageChange(currentPage - 1)}
+        className="border-planet-teal text-planet-teal hover:bg-planet-teal hover:text-white disabled:border-gray-300 disabled:text-gray-400"
       >
         <ChevronLeftIcon className="h-4 w-4" />
       </Button>
 
       {/* Page Info */}
       {totalPages > 0 && (
-        <span className="text-sm font-medium">
+        <span className="text-sm font-medium text-planet-dark-blue font-sans">
           Page {currentPage} of {totalPages}
         </span>
       )}
@@ -57,6 +59,7 @@ export function GalleryPagination({
         size="sm"
         disabled={!hasNextPage}
         onClick={() => onPageChange(currentPage + 1)}
+        className="border-planet-teal text-planet-teal hover:bg-planet-teal hover:text-white disabled:border-gray-300 disabled:text-gray-400"
       >
         <ChevronRightIcon className="h-4 w-4" />
       </Button>
@@ -67,6 +70,7 @@ export function GalleryPagination({
         size="sm"
         disabled={!hasNextPage}
         onClick={() => onPageChange(totalPages)}
+        className="border-planet-teal text-planet-teal hover:bg-planet-teal hover:text-white disabled:border-gray-300 disabled:text-gray-400"
       >
         <DoubleArrowRightIcon className="h-4 w-4" />
       </Button>

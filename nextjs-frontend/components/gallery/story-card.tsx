@@ -32,7 +32,7 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
 
   return (
     <Card
-      className="group cursor-pointer overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+      className="group cursor-pointer overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg border-gray-200 bg-white text-planet-dark-blue shadow-sm hover:shadow-md"
       onClick={handleClick}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -47,20 +47,20 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
             priority={false}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted text-sm font-medium text-muted-foreground">
+          <div className="flex h-full w-full items-center justify-center bg-gray-100 text-sm font-medium text-planet-dark-blue/70 font-sans">
             Image unavailable
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
           <h3
-            className="mb-1 line-clamp-2 text-lg font-semibold"
+            className="mb-1 line-clamp-2 text-lg font-heading font-semibold"
             title={story.title}
           >
             {story.title}
           </h3>
           {story.location && (
-            <p className="mb-2 text-sm text-white/90" title={story.location}>
+            <p className="mb-2 text-sm text-white/90 font-sans" title={story.location}>
               {story.location}
             </p>
           )}
@@ -72,7 +72,7 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
               {story.category}
             </Badge>
             {resolution && (
-              <span className="text-xs text-white/80">{resolution}</span>
+              <span className="text-xs text-white/80 font-sans">{resolution}</span>
             )}
           </div>
         </div>
@@ -80,7 +80,7 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
       <CardContent className="p-4 space-y-3">
         {story.description && (
           <p
-            className="line-clamp-2 text-sm text-muted-foreground"
+            className="line-clamp-2 text-sm text-planet-dark-blue/70 font-sans"
             title={story.description}
           >
             {story.description}

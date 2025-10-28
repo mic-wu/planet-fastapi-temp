@@ -9,17 +9,17 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white">
+      <div className="bg-gradient-to-br from-planet-dark-blue via-planet-teal to-planet-blue text-white">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">
               Image Gallery - Earth as seen by a Satellite
             </h1>
-            <p className="text-xl text-slate-300 mb-8">
+            <p className="text-xl text-white/90 mb-8 font-sans">
               Discover crystal-clear perspectives of our planet captured by the
               Planet Story Explorer constellation.
             </p>
-            <p className="text-slate-400">
+            <p className="text-white/80 font-sans">
               Switch between optical and radar imagery, search by location, and
               explore rich metadata from our satellites.
             </p>

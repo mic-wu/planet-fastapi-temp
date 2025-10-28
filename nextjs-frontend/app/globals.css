@@ -3,25 +3,38 @@
 @tailwind utilities;
 @layer base {
   :root {
+    /* Planet Labs Brand Colors */
+    --planet-teal: 180 100% 32%;        /* rgb(0, 157, 165) */
+    --planet-dark-teal: 180 100% 30%;   /* rgb(0, 127, 153) */
+    --planet-light-teal: 180 100% 43%;  /* rgb(28, 190, 201) */
+    --planet-blue: 180 100% 45%;        /* rgb(0, 203, 230) */
+    --planet-dark-blue: 220 20% 14%;    /* rgb(26, 32, 44) */
+    --planet-light-blue: 210 50% 40%;   /* rgb(34, 116, 172) */
+    
+    /* Font Variables */
+    --font-montserrat: 'Montserrat', sans-serif;
+    --font-gotham: '"Gotham SSm A", "Gotham SSm B", Montserrat, sans-serif';
+    
+    /* Semantic Color Mapping */
     --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --foreground: var(--planet-dark-blue);
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: var(--planet-dark-blue);
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --popover-foreground: var(--planet-dark-blue);
+    --primary: var(--planet-teal);
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --secondary: var(--planet-dark-blue);
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: var(--planet-blue);
+    --accent-foreground: var(--planet-dark-blue);
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: var(--planet-teal);
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;

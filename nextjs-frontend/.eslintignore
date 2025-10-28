@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+
+# Production builds
+dist/
+build/
+.next/
+
+# Coverage reports
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Lock files (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+*.tsbuildinfo

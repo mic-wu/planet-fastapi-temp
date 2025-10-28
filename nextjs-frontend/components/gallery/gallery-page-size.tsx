@@ -25,9 +25,9 @@ export function GalleryPageSize({
 
   return (
     <div className="flex items-center space-x-2">
-      <span className="text-sm text-gray-600">Items per page:</span>
+      <span className="text-sm text-planet-dark-blue font-sans">Items per page:</span>
       <Select value={currentSize.toString()} onValueChange={handleSizeChange}>
-        <SelectTrigger className="w-20">
+        <SelectTrigger className="w-20 border-planet-teal focus:ring-planet-teal">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

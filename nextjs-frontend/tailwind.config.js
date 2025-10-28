@@ -18,7 +18,20 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        sans: ['var(--font-montserrat)', 'Montserrat', 'sans-serif'],
+        heading: ['var(--font-gotham)', '"Gotham SSm A"', '"Gotham SSm B"', 'Montserrat', 'sans-serif'],
+      },
       colors: {
+        // Planet Labs Brand Colors
+        'planet-teal': 'hsl(var(--planet-teal))',
+        'planet-dark-teal': 'hsl(var(--planet-dark-teal))',
+        'planet-light-teal': 'hsl(var(--planet-light-teal))',
+        'planet-blue': 'hsl(var(--planet-blue))',
+        'planet-dark-blue': 'hsl(var(--planet-dark-blue))',
+        'planet-light-blue': 'hsl(var(--planet-light-blue))',
+        
+        // Semantic color mapping
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
