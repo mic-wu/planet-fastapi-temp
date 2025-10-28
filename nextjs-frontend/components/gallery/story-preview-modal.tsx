@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -47,6 +48,8 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
 }: StoryPreviewModalProps) {
   const [mounted, setMounted] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [fadeIn, setFadeIn] = useState(true);
+  const fadeRafRef = useRef<number | null>(null);
 
   const activeIndex = useMemo(
     () => stories.findIndex((story) => story.id === activeStoryId),
@@ -74,6 +77,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
   useEffect(() => {
     if (!open) {
       setImageError(false);
+      setFadeIn(true);
       return;
     }
 
@@ -106,6 +110,29 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
   useEffect(() => {
     setImageError(false);
   }, [activeStoryId]);
+
+  useEffect(() => {
+    if (!mounted || !activeStoryId) {
+      return;
+    }
+
+    setFadeIn(false);
+    if (fadeRafRef.current !== null) {
+      cancelAnimationFrame(fadeRafRef.current);
+    }
+
+    fadeRafRef.current = requestAnimationFrame(() => {
+      setFadeIn(true);
+    });
+  }, [activeStoryId, mounted]);
+
+  useEffect(() => {
+    return () => {
+      if (fadeRafRef.current !== null) {
+        cancelAnimationFrame(fadeRafRef.current);
+      }
+    };
+  }, []);
 
   const handleOverlayClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -170,9 +197,11 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
             <ArrowRight className="h-5 w-5" />
           </button>
 
-          <div className="flex flex-1 min-h-0 flex-col gap-4 p-4 lg:flex-row lg:gap-6 lg:p-8">
+          <div
+            className={`flex flex-1 min-h-0 flex-col gap-4 p-4 transition-all duration-300 ease-in-out lg:flex-row lg:gap-6 lg:p-8 ${fadeIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+          >
             <div className="flex flex-1 justify-center lg:flex-[0_0_65%]">
-              <div className="relative h-[260px] w-full overflow-hidden rounded-2xl border border-border/40 bg-muted/30 shadow-inner lg:h-full">
+              <div className={`relative h-[260px] w-full overflow-hidden rounded-2xl border border-border/40 bg-muted/30 shadow-inner lg:h-full transition-all duration-300 ease-in-out ${fadeIn ? "scale-100" : "scale-[0.98]"}`}>
                 {imageSource ? (
                   <Image
                     src={imageSource}
@@ -226,44 +255,44 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                   {(normalizedMetadata.capturedAt ||
                     normalizedMetadata.sensor ||
                     normalizedMetadata.satellite) && (
-                    <dl className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                      {normalizedMetadata.capturedAt && (
-                        <div>
-                          <dt className="uppercase tracking-wide">Captured</dt>
-                          <dd className="font-medium text-foreground">
-                            {formatDate(normalizedMetadata.capturedAt)}
-                          </dd>
-                        </div>
-                      )}
-                      {normalizedMetadata.sensor && (
-                        <div>
-                          <dt className="uppercase tracking-wide">Sensor</dt>
-                          <dd className="font-medium text-foreground">
-                            {normalizedMetadata.sensor}
-                          </dd>
-                        </div>
-                      )}
-                      {!normalizedMetadata.sensor &&
-                        normalizedMetadata.satellite && (
+                      <dl className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                        {normalizedMetadata.capturedAt && (
                           <div>
-                            <dt className="uppercase tracking-wide">
-                              Satellite
-                            </dt>
+                            <dt className="uppercase tracking-wide">Captured</dt>
                             <dd className="font-medium text-foreground">
-                              {normalizedMetadata.satellite}
+                              {formatDate(normalizedMetadata.capturedAt)}
                             </dd>
                           </div>
                         )}
-                      {normalizedMetadata.revisit && (
-                        <div>
-                          <dt className="uppercase tracking-wide">Revisit</dt>
-                          <dd className="font-medium text-foreground">
-                            {normalizedMetadata.revisit}
-                          </dd>
-                        </div>
-                      )}
-                    </dl>
-                  )}
+                        {normalizedMetadata.sensor && (
+                          <div>
+                            <dt className="uppercase tracking-wide">Sensor</dt>
+                            <dd className="font-medium text-foreground">
+                              {normalizedMetadata.sensor}
+                            </dd>
+                          </div>
+                        )}
+                        {!normalizedMetadata.sensor &&
+                          normalizedMetadata.satellite && (
+                            <div>
+                              <dt className="uppercase tracking-wide">
+                                Satellite
+                              </dt>
+                              <dd className="font-medium text-foreground">
+                                {normalizedMetadata.satellite}
+                              </dd>
+                            </div>
+                          )}
+                        {normalizedMetadata.revisit && (
+                          <div>
+                            <dt className="uppercase tracking-wide">Revisit</dt>
+                            <dd className="font-medium text-foreground">
+                              {normalizedMetadata.revisit}
+                            </dd>
+                          </div>
+                        )}
+                      </dl>
+                    )}
                 </div>
               </div>
 
