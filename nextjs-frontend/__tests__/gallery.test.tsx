@@ -9,7 +9,7 @@ import {
   ResolutionFilterOption,
   StoryFilters,
 } from "@/components/gallery/story-filters";
-import { StoryModal } from "@/components/gallery/story-modal";
+import { StoryPreviewModal } from "@/components/gallery/story-preview-modal";
 
 const pushMock = jest.fn();
 
@@ -212,24 +212,40 @@ describe("Gallery Components", () => {
     });
   });
 
-  describe("StoryModal", () => {
+  describe("StoryPreviewModal", () => {
     it("renders story details when open", async () => {
       const handleClose = jest.fn();
 
-      render(<StoryModal story={mockStory} open onClose={handleClose} />);
+      render(
+        <StoryPreviewModal
+          stories={[mockStory]}
+          open
+          activeStoryId={mockStory.id}
+          onClose={handleClose}
+          onChangeStory={jest.fn()}
+        />,
+      );
 
       await waitFor(() => {
         expect(screen.getByRole("dialog")).toBeInTheDocument();
       });
       expect(screen.getByText("Test Story")).toBeInTheDocument();
       expect(screen.getByText("Test Location")).toBeInTheDocument();
-      expect(screen.getByText("30cm")).toBeInTheDocument();
+      expect(screen.getAllByText("30cm").length).toBeGreaterThan(0);
     });
 
     it("calls onClose when escape key pressed", async () => {
       const handleClose = jest.fn();
 
-      render(<StoryModal story={mockStory} open onClose={handleClose} />);
+      render(
+        <StoryPreviewModal
+          stories={[mockStory]}
+          open
+          activeStoryId={mockStory.id}
+          onClose={handleClose}
+          onChangeStory={jest.fn()}
+        />,
+      );
 
       await waitFor(() => {
         expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -242,12 +258,46 @@ describe("Gallery Components", () => {
     });
 
     it("links to the detail page", async () => {
-      render(<StoryModal story={mockStory} open onClose={jest.fn()} />);
+      render(
+        <StoryPreviewModal
+          stories={[mockStory]}
+          open
+          activeStoryId={mockStory.id}
+          onClose={jest.fn()}
+          onChangeStory={jest.fn()}
+        />,
+      );
 
       const detailLink = await screen.findByRole("link", {
-        name: /open detail page/i,
+        name: /view full story/i,
       });
       expect(detailLink).toHaveAttribute("href", `/gallery/${mockStory.id}`);
+    });
+
+    it("navigates to next story using buttons", async () => {
+      const secondStory: StoryRead = {
+        ...mockStory,
+        id: "second",
+        title: "Second Story",
+        story_metadata: { resolution: "1m", sensor: "PSX" },
+      };
+      const handleChange = jest.fn();
+
+      const user = userEvent.setup();
+
+      render(
+        <StoryPreviewModal
+          stories={[mockStory, secondStory]}
+          open
+          activeStoryId={mockStory.id}
+          onClose={jest.fn()}
+          onChangeStory={handleChange}
+        />,
+      );
+
+      await user.click(screen.getByRole("button", { name: /^Next$/i }));
+
+      expect(handleChange).toHaveBeenCalledWith("second");
     });
   });
 
@@ -302,7 +352,7 @@ describe("Gallery Components", () => {
       });
     });
 
-    it("opens and closes modal when story card is clicked", async () => {
+    it("opens and closes preview modal when story card is clicked", async () => {
       const user = userEvent.setup();
       render(<GalleryGrid initialData={mockInitialData} />);
 
@@ -312,9 +362,7 @@ describe("Gallery Components", () => {
         expect(screen.getByRole("dialog")).toBeInTheDocument();
       });
 
-      await user.click(
-        screen.getByRole("button", { name: /close story details/i }),
-      );
+      await user.click(screen.getByRole("button", { name: /close preview/i }));
 
       await waitFor(() => {
         expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

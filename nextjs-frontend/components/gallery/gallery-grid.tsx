@@ -7,8 +7,8 @@ import { GalleryPagination } from "./gallery-pagination";
 import { GalleryPageSize } from "./gallery-page-size";
 import { StoryRead, PaginatedResponse } from "@/app/openapi-client/types.gen";
 import { getStories } from "@/components/actions/stories-action";
-import { StoryModal } from "./story-modal";
 import type { ResolutionFilterOption } from "./story-filters";
+import { StoryPreviewModal } from "./story-preview-modal";
 
 interface GalleryGridProps {
   initialData: PaginatedResponse;
@@ -26,8 +26,8 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [selectedStory, setSelectedStory] = useState<StoryRead | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [sensorFilter, setSensorFilter] = useState<string | null>(null);
   const [resolutionFilter, setResolutionFilter] =
     useState<ResolutionFilterOption>("any");
@@ -189,13 +189,17 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
   );
 
   const handleStoryClick = (story: StoryRead) => {
-    setSelectedStory(story);
-    setIsModalOpen(true);
+    setSelectedStoryId(story.id);
+    setIsPreviewOpen(true);
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedStory(null);
+  const handlePreviewClose = () => {
+    setIsPreviewOpen(false);
+    setSelectedStoryId(null);
+  };
+
+  const handleChangeStory = (storyId: string) => {
+    setSelectedStoryId(storyId);
   };
 
   return (
@@ -296,10 +300,12 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
         </>
       )}
 
-      <StoryModal
-        open={isModalOpen}
-        story={selectedStory}
-        onClose={handleModalClose}
+      <StoryPreviewModal
+        stories={filteredStories}
+        open={isPreviewOpen}
+        activeStoryId={selectedStoryId}
+        onClose={handlePreviewClose}
+        onChangeStory={handleChangeStory}
       />
     </div>
   );
