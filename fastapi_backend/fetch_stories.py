@@ -25,11 +25,15 @@ def setup_database():
     cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
             id TEXT PRIMARY KEY,
-            created_at TEXT,
             title TEXT,
-            description TEXT,
-            thumbnail_url TEXT,
-            story_url TEXT
+            author TEXT,
+            format TEXT,
+            created TEXT, 
+            updated TEXT,  
+            center_long REAL,
+            center_lat REAL,
+            embed_link TEXT,
+            view_link TEXT
         )
     ''')
     conn.commit()
@@ -44,21 +48,40 @@ def store_stories(stories):
 
     for story in stories:
         story_id = story.get('id')
-        attributes = story.get('attributes', {})
-        links = story.get('links', {})
+        title = story.get('title')
+        author = story.get('author')
+        format = story.get('format')
+        created = story.get('created')
+        updated = story.get('updated')
 
-        story_url = links.get('self', f"https://www.planet.com/stories/{story_id}")
+        # Split center into latitude and longitude
+        center = story.get('center', ['None', 'None'])
+        center_long = center[0] if center and len(center) > 0 else None
+        center_lat = center[1] if center and len(center) > 1 else None
+
+        # Get embed link
+        if (format == 'mp4'):
+            embed_link = f"https://storage.googleapis.com/planet-t2/{story_id}/movie.mp4"
+        elif (format == 'raw'):
+            embed_link = f"https://www.planet.com/compare/?id={story_id}"
+
+        # View story
+        view_link = f"https://www.planet.com/stories/{story_id}"
 
         cursor.execute(f'''
-            INSERT OR REPLACE INTO {TABLE_NAME} (id, created_at, title, description, thumbnail_url, story_url)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO {TABLE_NAME} (id, title, author, format, created, updated, center_long, center_lat, embed_link, view_link)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             story_id,
-            attributes.get('createdAt'),
-            attributes.get('title'),
-            attributes.get('description'),
-            attributes.get('thumbnail'),
-            story_url
+            title,
+            author,
+            format,
+            created,
+            updated,
+            center_long,
+            center_lat,
+            embed_link,
+            view_link
         ))
 
     conn.commit()
