@@ -1,10 +1,13 @@
-import requests
-import sqlite3
-import json
+import requests 
+from supabase import create_client, Client
+
+SUPABASE_URL = "https://jypkhidwfvsuznfgkwfk.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5cGtoaWR3ZnZzdXpuZmdrd2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyMDQ2ODgsImV4cCI6MjA3Nzc4MDY4OH0.jg8do5MLqjggYHgEX9m7yKwPB0YgOavSvk9sXQ9G1fA"
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 API_URL = "https://api.planet.com/explorer/t2/animations"
-DATABASE_NAME = "planet_stories.db"
-TABLE_NAME = "stories"
+TABLE_NAME = "planet_stories"
 
 def fetch_stories(limit=10):
     params = {'limit': limit}
@@ -19,84 +22,54 @@ def fetch_stories(limit=10):
 
         return None
 
-def setup_database():
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
-    cursor.execute(f'''
-        CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-            id TEXT PRIMARY KEY,
-            title TEXT,
-            author TEXT,
-            format TEXT,
-            created TEXT, 
-            updated TEXT,  
-            center_long REAL,
-            center_lat REAL,
-            embed_link TEXT,
-            view_link TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
 def store_stories(stories):
     if not stories:
         return
-
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
+    
+    stories_insert = []
 
     for story in stories:
-        story_id = story.get('id')
-        title = story.get('title')
-        author = story.get('author')
-        format = story.get('format')
-        created = story.get('created')
-        updated = story.get('updated')
-
-        # Split center into latitude and longitude
-        center = story.get('center', ['None', 'None'])
-        center_long = center[0] if center and len(center) > 0 else None
-        center_lat = center[1] if center and len(center) > 1 else None
+        # Get id and format for embed link
+        story_id = story.get('id') 
+        format = story.get('format') 
+        center = story.get('center', ['None', 'None']) # Get center
 
         # Get embed link
+        embed_link = None
         if (format == 'mp4'):
             embed_link = f"https://storage.googleapis.com/planet-t2/{story_id}/movie.mp4"
         elif (format == 'raw'):
             embed_link = f"https://www.planet.com/compare/?id={story_id}"
 
-        # View story
-        view_link = f"https://www.planet.com/stories/{story_id}"
+        story_data = {
+            'id': story_id,
+            'title': story.get('title'),
+            'author': story.get('author'),
+            'format': format,
+            'created': story.get('created'),
+            'updated': story.get('updated'),
+            'center_long': center[0] if center and len(center) > 0 else None,
+            'center_lat': center[1] if center and len(center) > 1 else None,
+            'embed_link': embed_link,
+            'view_link': f"https://www.planet.com/stories/{story_id}"
+        }
 
-        cursor.execute(f'''
-            INSERT OR REPLACE INTO {TABLE_NAME} (id, title, author, format, created, updated, center_long, center_lat, embed_link, view_link)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            story_id,
-            title,
-            author,
-            format,
-            created,
-            updated,
-            center_long,
-            center_lat,
-            embed_link,
-            view_link
-        ))
+        stories_insert.append(story_data)
+    
+    try:
+        data, count = supabase.table(TABLE_NAME).upsert(stories_insert).execute()
+        print(f"Successfully stored {len(stories)} stories in the database.")
+    
+    except Exception as e: 
+        print(f"Error storing data in database: {e}")
 
-    conn.commit()
-    conn.close()
-    print(f"Successfully stored {len(stories)} stories in the database.")
 
 if __name__ == "__main__":
-    # 1. Set up the database and table
-    setup_database()
-
-    # 2. Fetch the latest stories from the API
+    # Fetch the latest stories from the API
     stories_to_fetch = 20
     print(f"Fetching the latest {stories_to_fetch} stories...")
     latest_stories = fetch_stories(limit=stories_to_fetch)
 
-    # 3. Store the fetched stories in the database
+    # Store the fetched stories in the database
     if latest_stories:
         store_stories(latest_stories)
