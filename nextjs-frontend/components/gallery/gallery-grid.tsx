@@ -223,7 +223,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
       />
 
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <div className="rounded-md border border-destructive-light/40 bg-destructive-light/20 px-4 py-3 text-sm text-destructive-dark">
           {error}
         </div>
       )}
@@ -231,7 +231,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center py-8">
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-planet-teal"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
         </div>
       )}
 
@@ -251,10 +251,10 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
           {/* Empty State */}
           {filteredStories.length === 0 && (
             <div className="text-center py-12">
-              <h3 className="text-lg font-heading font-semibold text-planet-dark-blue mb-2">
+              <h3 className="mb-2 text-lg font-heading font-semibold text-foreground">
                 No stories found
               </h3>
-              <p className="text-planet-dark-blue/70 font-sans">
+              <p className="text-muted-foreground font-sans">
                 Try adjusting your search or filter criteria.
               </p>
             </div>
@@ -269,14 +269,14 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
                   onSizeChange={handlePageSizeChange}
                   sizes={[12, 24, 48]}
                 />
-                <div className="text-sm text-planet-dark-blue/70 font-sans">
+                <div className="text-sm text-muted-foreground font-sans">
                   <span className="font-medium">
                     {filteredStories.length}{" "}
                     {filteredStories.length === 1 ? "story" : "stories"}
                   </span>{" "}
                   on this page
                   {hasActiveAdvancedFilters && (
-                    <span className="ml-1 text-xs italic text-planet-teal">
+                    <span className="ml-1 text-xs italic text-primary">
                       (filtered)
                     </span>
                   )}

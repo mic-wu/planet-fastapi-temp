@@ -88,12 +88,12 @@ export function StoryFilters({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {/* Search Bar */}
         <div className="relative max-w-md flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-planet-dark-blue/60" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
             placeholder="Search stories, locations, or descriptions..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="pl-10 border-planet-teal focus:ring-planet-teal"
+            className="pl-10"
           />
         </div>
 
@@ -112,22 +112,22 @@ export function StoryFilters({
 
       {/* Category Filters */}
       <Tabs value={categoryValue} onValueChange={handleCategoryChange}>
-        <TabsList className="grid w-full max-w-md grid-cols-3 bg-gray-100">
-          <TabsTrigger 
+        <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsTrigger
             value="all"
-            className="data-[state=active]:bg-planet-teal data-[state=active]:text-white text-planet-dark-blue"
+            className="font-sans"
           >
             All
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="optical"
-            className="data-[state=active]:bg-planet-teal data-[state=active]:text-white text-planet-dark-blue"
+            className="font-sans"
           >
             Optical
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="radar"
-            className="data-[state=active]:bg-planet-teal data-[state=active]:text-white text-planet-dark-blue"
+            className="font-sans"
           >
             Radar
           </TabsTrigger>
@@ -135,10 +135,10 @@ export function StoryFilters({
       </Tabs>
 
       {isAdvancedOpen && (
-        <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <div className="space-y-4 rounded-lg border border-border bg-surface-raised p-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-1">
-              <p className="text-sm font-medium text-planet-dark-blue font-sans">
+              <p className="text-sm font-medium text-foreground font-sans">
                 Sensor
               </p>
               <Select
@@ -148,7 +148,7 @@ export function StoryFilters({
                 }
                 disabled={availableSensors.length === 0}
               >
-                <SelectTrigger aria-label="Sensor filter" className="border-planet-teal focus:ring-planet-teal">
+                <SelectTrigger aria-label="Sensor filter">
                   <SelectValue placeholder="All sensors" />
                 </SelectTrigger>
                 <SelectContent>
@@ -163,7 +163,7 @@ export function StoryFilters({
             </div>
 
             <div className="space-y-1">
-              <p className="text-sm font-medium text-planet-dark-blue font-sans">
+              <p className="text-sm font-medium text-foreground font-sans">
                 Resolution
               </p>
               <Select
@@ -172,7 +172,7 @@ export function StoryFilters({
                   onResolutionChange(value as ResolutionFilterOption)
                 }
               >
-                <SelectTrigger aria-label="Resolution filter" className="border-planet-teal focus:ring-planet-teal">
+                <SelectTrigger aria-label="Resolution filter">
                   <SelectValue placeholder="Any resolution" />
                 </SelectTrigger>
                 <SelectContent>
@@ -187,7 +187,7 @@ export function StoryFilters({
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs text-planet-dark-blue/70 font-sans">
+            <p className="text-xs text-muted-foreground font-sans">
               Advanced filters apply to the stories shown on the current page.
             </p>
             <Button
@@ -197,7 +197,6 @@ export function StoryFilters({
               onClick={() => {
                 onClearAdvancedFilters();
               }}
-              className="text-planet-teal hover:bg-planet-teal/10"
             >
               Clear advanced filters
             </Button>

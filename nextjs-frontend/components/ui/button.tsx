@@ -5,20 +5,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-planet-teal disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ring-offset-background",
   {
     variants: {
       variant: {
         default:
-          "bg-planet-teal text-white shadow hover:bg-planet-dark-teal",
+          "bg-primary text-primary-foreground shadow-sm hover:bg-primary-dark",
         destructive:
-          "bg-red-600 text-white shadow-sm hover:bg-red-700",
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive-dark",
         outline:
-          "border border-planet-teal bg-transparent text-planet-teal shadow-sm hover:bg-planet-teal hover:text-white",
+          "border border-border bg-transparent text-foreground shadow-sm hover:bg-primary/10 hover:text-primary",
         secondary:
-          "bg-planet-blue text-planet-dark-blue shadow-sm hover:bg-planet-light-teal",
-        ghost: "hover:bg-planet-teal/10 hover:text-planet-teal",
-        link: "text-planet-teal underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary-dark",
+        ghost: "text-primary hover:bg-primary/10",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-4 py-2",
