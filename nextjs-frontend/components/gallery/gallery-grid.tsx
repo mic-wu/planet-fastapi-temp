@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { StoryCard } from "./story-card";
 import { StoryFilters } from "./story-filters";
 import { GalleryPagination } from "./gallery-pagination";
 import { GalleryPageSize } from "./gallery-page-size";
 import { StoryRead, PaginatedResponse } from "@/app/openapi-client/types.gen";
 import { getStories } from "@/components/actions/stories-action";
+import type { ResolutionFilterOption } from "./story-filters";
+import { StoryPreviewModal } from "./story-preview-modal";
 
 interface GalleryGridProps {
   initialData: PaginatedResponse;
@@ -23,6 +25,103 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [sensorFilter, setSensorFilter] = useState<string | null>(null);
+  const [resolutionFilter, setResolutionFilter] =
+    useState<ResolutionFilterOption>("any");
+
+  const parseResolutionValue = useCallback((value: unknown) => {
+    if (typeof value !== "string") {
+      return null;
+    }
+
+    const match = value.trim().match(/^([\d.]+)\s*(cm|m)$/i);
+    if (!match) {
+      return null;
+    }
+
+    const [, raw, unit] = match;
+    const numeric = Number.parseFloat(raw);
+    if (Number.isNaN(numeric)) {
+      return null;
+    }
+
+    if (unit.toLowerCase() === "cm") {
+      return numeric / 100;
+    }
+
+    return numeric;
+  }, []);
+
+  const matchesResolutionFilter = useCallback(
+    (value: number | null, filter: ResolutionFilterOption): boolean => {
+      if (filter === "any") {
+        return true;
+      }
+
+      if (value === null) {
+        return false;
+      }
+
+      switch (filter) {
+        case "lte-0.5":
+          return value <= 0.5;
+        case "lte-1":
+          return value <= 1;
+        case "lte-3":
+          return value <= 3;
+        case "gt-3":
+          return value > 3;
+        default:
+          return true;
+      }
+    },
+    [],
+  );
+
+  const availableSensors = useMemo(() => {
+    const sensors = new Set<string>();
+    stories.forEach((story) => {
+      const sensor = story.story_metadata?.sensor;
+      if (typeof sensor === "string" && sensor.trim().length > 0) {
+        sensors.add(sensor);
+      }
+    });
+    return Array.from(sensors).sort((a, b) => a.localeCompare(b));
+  }, [stories]);
+
+  const filteredStories = useMemo(() => {
+    return stories.filter((story) => {
+      const sensor =
+        typeof story.story_metadata?.sensor === "string"
+          ? story.story_metadata.sensor
+          : null;
+      const resolutionValue = parseResolutionValue(
+        story.story_metadata?.resolution,
+      );
+
+      if (sensorFilter && sensor !== sensorFilter) {
+        return false;
+      }
+
+      if (!matchesResolutionFilter(resolutionValue, resolutionFilter)) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [
+    stories,
+    sensorFilter,
+    resolutionFilter,
+    parseResolutionValue,
+    matchesResolutionFilter,
+  ]);
+
+  const hasActiveAdvancedFilters =
+    sensorFilter !== null || resolutionFilter !== "any";
 
   const fetchStories = useCallback(
     async (
@@ -32,6 +131,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
       categoryFilter: string | null,
     ) => {
       setLoading(true);
+      setError(null);
       try {
         const response = await getStories({
           page,
@@ -49,6 +149,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
         });
       } catch (error) {
         console.error("Failed to fetch stories:", error);
+        setError("Something went wrong while fetching stories. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -58,8 +159,9 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
 
   const handleSearchChange = useCallback(
     (searchTerm: string) => {
-      setSearch(searchTerm);
-      fetchStories(1, pagination.limit, searchTerm, category);
+      const normalizedSearch = searchTerm.trim();
+      setSearch(normalizedSearch);
+      fetchStories(1, pagination.limit, normalizedSearch, category);
     },
     [fetchStories, pagination.limit, category],
   );
@@ -87,8 +189,17 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
   );
 
   const handleStoryClick = (story: StoryRead) => {
-    // TODO: Implement story detail view/modal
-    console.log("Story clicked:", story);
+    setSelectedStoryId(story.id);
+    setIsPreviewOpen(true);
+  };
+
+  const handlePreviewClose = () => {
+    setIsPreviewOpen(false);
+    setSelectedStoryId(null);
+  };
+
+  const handleChangeStory = (storyId: string) => {
+    setSelectedStoryId(storyId);
   };
 
   return (
@@ -99,20 +210,36 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
         onCategoryChange={handleCategoryChange}
         searchValue={search}
         categoryValue={category || "all"}
+        availableSensors={availableSensors}
+        sensorValue={sensorFilter}
+        onSensorChange={setSensorFilter}
+        resolutionValue={resolutionFilter}
+        onResolutionChange={setResolutionFilter}
+        onClearAdvancedFilters={() => {
+          setSensorFilter(null);
+          setResolutionFilter("any");
+        }}
+        hasActiveAdvancedFilters={hasActiveAdvancedFilters}
       />
+
+      {error && (
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
         </div>
       )}
 
       {/* Stories Grid */}
       {!loading && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {stories.map((story) => (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredStories.map((story) => (
               <StoryCard
                 key={story.id}
                 story={story}
@@ -122,7 +249,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
           </div>
 
           {/* Empty State */}
-          {stories.length === 0 && (
+          {filteredStories.length === 0 && (
             <div className="text-center py-12">
               <h3 className="text-lg font-semibold text-muted-foreground mb-2">
                 No stories found
@@ -134,7 +261,7 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
           )}
 
           {/* Pagination */}
-          {stories.length > 0 && (
+          {filteredStories.length > 0 && (
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8">
               <div className="flex items-center gap-4">
                 <GalleryPageSize
@@ -142,14 +269,25 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
                   onSizeChange={handlePageSizeChange}
                   sizes={[12, 24, 48]}
                 />
-                <span className="text-sm text-muted-foreground">
-                  Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-                  {Math.min(
-                    pagination.page * pagination.limit,
-                    pagination.total,
-                  )}{" "}
-                  of {pagination.total} stories
-                </span>
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-medium">
+                    {filteredStories.length}{" "}
+                    {filteredStories.length === 1 ? "story" : "stories"}
+                  </span>{" "}
+                  on this page
+                  {hasActiveAdvancedFilters && (
+                    <span className="ml-1 text-xs italic text-primary">
+                      (filtered)
+                    </span>
+                  )}
+                  <div>
+                    Page {pagination.page} of{" "}
+                    {Math.max(
+                      1,
+                      Math.ceil(pagination.total / pagination.limit),
+                    )}
+                  </div>
+                </div>
               </div>
 
               <GalleryPagination
@@ -161,6 +299,14 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
           )}
         </>
       )}
+
+      <StoryPreviewModal
+        stories={filteredStories}
+        open={isPreviewOpen}
+        activeStoryId={selectedStoryId}
+        onClose={handlePreviewClose}
+        onChangeStory={handleChangeStory}
+      />
     </div>
   );
 }

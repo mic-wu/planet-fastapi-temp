@@ -50,6 +50,15 @@ import type {
   DeleteItemData,
   DeleteItemError,
   DeleteItemResponse,
+  ListStoriesData,
+  ListStoriesError,
+  ListStoriesResponse,
+  CreateStoryData,
+  CreateStoryError,
+  CreateStoryResponse,
+  GetStoryData,
+  GetStoryError,
+  GetStoryResponse,
 } from "./types.gen";
 
 export const client = createClient(createConfig());
@@ -296,5 +305,53 @@ export const deleteItem = <ThrowOnError extends boolean = false>(
   >({
     ...options,
     url: "/items/{item_id}",
+  });
+};
+
+/**
+ * List Stories
+ */
+export const listStories = <ThrowOnError extends boolean = false>(
+  options?: OptionsLegacyParser<ListStoriesData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    ListStoriesResponse,
+    ListStoriesError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/api/stories/",
+  });
+};
+
+/**
+ * Create Story
+ */
+export const createStory = <ThrowOnError extends boolean = false>(
+  options: OptionsLegacyParser<CreateStoryData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).post<
+    CreateStoryResponse,
+    CreateStoryError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/api/stories/",
+  });
+};
+
+/**
+ * Get Story
+ */
+export const getStory = <ThrowOnError extends boolean = false>(
+  options: OptionsLegacyParser<GetStoryData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).get<
+    GetStoryResponse,
+    GetStoryError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/api/stories/{story_id}",
   });
 };

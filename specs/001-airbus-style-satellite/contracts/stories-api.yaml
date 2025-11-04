@@ -1,0 +1,228 @@
+openapi: 3.1.0
+info:
+  title: Stories API
+  description: Satellite image gallery API for Planet Story Explorer
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: Local development
+  - url: https://api.planetstoryexplorer.com
+    description: Production
+
+paths:
+  /api/stories/:
+    get:
+      summary: List stories with filtering and pagination
+      operationId: getStories
+      tags:
+        - stories
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 12
+          description: Number of items per page
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 255
+          description: Search term for title, location, or description
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [optical, radar]
+          description: Filter by category
+      responses:
+        "200":
+          description: Paginated list of stories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedResponse"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      summary: Create a new story
+      operationId: createStory
+      tags:
+        - stories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoryCreate"
+      responses:
+        "200":
+          description: Story created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryRead"
+        "400":
+          description: Invalid story data or duplicate story_id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/stories/{story_id}:
+    get:
+      summary: Get a single story by ID
+      operationId: getStory
+      tags:
+        - stories
+      parameters:
+        - name: story_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Story UUID
+      responses:
+        "200":
+          description: Story details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryRead"
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    StoryCreate:
+      type: object
+      required:
+        - story_id
+        - title
+        - category
+      properties:
+        story_id:
+          type: string
+          maxLength: 255
+          description: External/Planet API story ID (must be unique)
+        title:
+          type: string
+          maxLength: 255
+          description: Story/image title
+        location:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: Geographic location
+        description:
+          type: string
+          maxLength: 2000
+          nullable: true
+          description: Detailed description
+        thumbnail_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Small image URL for grid (400x300 recommended)
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Full-size image URL for modal (1200x800+ recommended)
+        category:
+          type: string
+          enum: [optical, radar]
+          description: Image category
+        story_metadata:
+          type: object
+          nullable: true
+          description: Additional metadata (resolution, satellite, coordinates, etc.)
+          additionalProperties: true
+
+    StoryRead:
+      allOf:
+        - $ref: "#/components/schemas/StoryCreate"
+        - type: object
+          required:
+            - id
+            - created_at
+            - updated_at
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier
+            user_id:
+              type: string
+              format: uuid
+              nullable: true
+              description: Optional reference to User
+            created_at:
+              type: string
+              format: date-time
+              description: Timestamp when story was added
+            updated_at:
+              type: string
+              format: date-time
+              description: Timestamp of last update
+
+    PaginatedResponse:
+      type: object
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - has_more
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/StoryRead"
+          description: Array of stories for current page
+        total:
+          type: integer
+          description: Total number of stories matching filters
+        page:
+          type: integer
+          description: Current page number
+        limit:
+          type: integer
+          description: Number of items per page
+        has_more:
+          type: boolean
+          description: Whether there are more pages available
+
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+

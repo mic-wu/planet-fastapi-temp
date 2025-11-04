@@ -65,6 +65,46 @@ export type Page_ItemRead_ = {
   pages?: number | null;
 };
 
+export type PaginatedStoriesResponse = {
+  data: Array<StoryRead>;
+  total: number;
+  page: number;
+  limit: number;
+  has_more: boolean;
+};
+
+export type StoryCategory = "optical" | "radar";
+
+export type StoryCreate = {
+  story_id: string;
+  title: string;
+  location?: string | null;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  image_url?: string | null;
+  category: StoryCategory;
+  story_metadata?: {
+    [key: string]: unknown;
+  } | null;
+};
+
+export type StoryRead = {
+  story_id: string;
+  title: string;
+  location?: string | null;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  image_url?: string | null;
+  category: StoryCategory;
+  story_metadata?: {
+    [key: string]: unknown;
+  } | null;
+  id: string;
+  user_id?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type UserCreate = {
   email: string;
   password: string;
@@ -227,3 +267,46 @@ export type DeleteItemData = {
 export type DeleteItemResponse = unknown;
 
 export type DeleteItemError = HTTPValidationError;
+
+export type ListStoriesData = {
+  query?: {
+    /**
+     * Story category
+     */
+    category?: StoryCategory | null;
+    /**
+     * Items per page
+     */
+    limit?: number;
+    /**
+     * Page number
+     */
+    page?: number;
+    /**
+     * Search term
+     */
+    search?: string | null;
+  };
+};
+
+export type ListStoriesResponse = PaginatedStoriesResponse;
+
+export type ListStoriesError = HTTPValidationError;
+
+export type CreateStoryData = {
+  body: StoryCreate;
+};
+
+export type CreateStoryResponse = StoryRead;
+
+export type CreateStoryError = HTTPValidationError;
+
+export type GetStoryData = {
+  path: {
+    story_id: string;
+  };
+};
+
+export type GetStoryResponse = StoryRead;
+
+export type GetStoryError = HTTPValidationError;
