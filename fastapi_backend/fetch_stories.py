@@ -37,6 +37,13 @@ def store_stories(stories):
         format = story.get('format') 
         center = story.get('center', ['None', 'None']) # Get center
 
+        # Get embed link (commented out - can be generated on frontend)
+        # embed_link = None
+        # if (format == 'mp4'):
+        #     embed_link = f"https://storage.googleapis.com/planet-t2/{story_id}/movie.mp4"
+        # elif (format == 'raw'):
+        #     embed_link = f"https://www.planet.com/compare/?id={story_id}"
+
         story_data = {
             'id': story_id,
             'title': story.get('title'),
@@ -46,6 +53,7 @@ def store_stories(stories):
             'updated': story.get('updated'),
             'center_long': center[0] if center and len(center) > 0 else None,
             'center_lat': center[1] if center and len(center) > 1 else None,
+            # 'embed_link': embed_link,
             'view_link': f"https://www.planet.com/stories/{story_id}"
         }
 
