@@ -3,21 +3,26 @@ import type {
   StoryRead,
 } from "@/app/openapi-client/types.gen";
 import type { StoriesQueryParams } from "@/lib/services/stories/types";
+import { formatToCategory } from "@/lib/utils/storyFormat";
+import { generateStoryUrls } from "@/lib/utils/storyUrls";
 
-export const mockStories: StoryRead[] = [
+// Mock stories with format field (as they would come from API)
+const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
   {
     id: "mock-aurora-horizon",
     story_id: "mock-aurora-horizon",
     title: "Aurora Over The Horizon",
     location: "Arctic Circle",
     description: "Vivid aurora curtains captured during a polar orbit pass.",
-    image_url: "/images/mock/aurora-horizon.svg",
-    thumbnail_url: "/images/mock/aurora-horizon.svg",
-    category: "optical",
+    image_url: null, // Will be generated
+    thumbnail_url: null, // Will be generated
+    category: "optical", // Will be overridden by enrichment
+    format: "mp4", // Video format
     story_metadata: {
       sensor: "PSX-Optic",
       captured_at: "2024-01-12T22:15:00Z",
       resolution: "0.5m",
+      format: "mp4",
     },
     user_id: null,
     created_at: "2024-01-13T00:00:00Z",
@@ -29,13 +34,15 @@ export const mockStories: StoryRead[] = [
     title: "Rippled Desert Dunes",
     location: "Sahara Desert, Algeria",
     description: "Sunset light revealing wave-like dune formations.",
-    image_url: "/images/mock/desert-dunes.svg",
-    thumbnail_url: "/images/mock/desert-dunes.svg",
+    image_url: null,
+    thumbnail_url: null,
     category: "optical",
+    format: "raw", // Image format
     story_metadata: {
       sensor: "PSX-Optic",
       captured_at: "2024-02-05T15:40:00Z",
       resolution: "0.75m",
+      format: "raw",
     },
     user_id: null,
     created_at: "2024-02-06T00:00:00Z",
@@ -47,13 +54,15 @@ export const mockStories: StoryRead[] = [
     title: "Eye of the Storm",
     location: "Western Pacific Ocean",
     description: "Synthetic aperture radar slice through a super-typhoon.",
-    image_url: "/images/mock/storm-eye.svg",
-    thumbnail_url: "/images/mock/storm-eye.svg",
-    category: "radar",
+    image_url: null,
+    thumbnail_url: null,
+    category: "optical",
+    format: "raw", // Image format
     story_metadata: {
       sensor: "PSX-Radar",
       captured_at: "2024-03-22T04:05:00Z",
       resolution: "1.0m",
+      format: "raw",
     },
     user_id: null,
     created_at: "2024-03-23T00:00:00Z",
@@ -66,13 +75,15 @@ export const mockStories: StoryRead[] = [
     location: "Mount Etna, Italy",
     description:
       "Thermal signature of an eruption venting into the stratosphere.",
-    image_url: "/images/mock/volcano-plume.svg",
-    thumbnail_url: "/images/mock/volcano-plume.svg",
-    category: "infrared",
+    image_url: null,
+    thumbnail_url: null,
+    category: "optical",
+    format: "mp4", // Video format
     story_metadata: {
       sensor: "PSX-Thermal",
       captured_at: "2024-04-18T10:20:00Z",
       resolution: "5m",
+      format: "mp4",
     },
     user_id: null,
     created_at: "2024-04-19T00:00:00Z",
@@ -84,13 +95,15 @@ export const mockStories: StoryRead[] = [
     title: "Rainforest Regrowth",
     location: "Amazon Basin, Brazil",
     description: "False-color composite highlighting canopy restoration zones.",
-    image_url: "/images/mock/forest-regrowth.svg",
-    thumbnail_url: "/images/mock/forest-regrowth.svg",
-    category: "infrared",
+    image_url: null,
+    thumbnail_url: null,
+    category: "optical",
+    format: "raw", // Image format
     story_metadata: {
       sensor: "PSX-Multispectral",
       captured_at: "2024-05-09T13:30:00Z",
       resolution: "2m",
+      format: "raw",
     },
     user_id: null,
     created_at: "2024-05-10T00:00:00Z",
@@ -102,19 +115,43 @@ export const mockStories: StoryRead[] = [
     title: "City Night Grid",
     location: "Tokyo, Japan",
     description: "Urban light network observed from geosynchronous orbit.",
-    image_url: "/images/mock/city-grid.svg",
-    thumbnail_url: "/images/mock/city-grid.svg",
+    image_url: null,
+    thumbnail_url: null,
     category: "optical",
+    format: "mp4", // Video format
     story_metadata: {
       sensor: "PSX-LowLight",
       captured_at: "2024-06-14T20:55:00Z",
       resolution: "1.5m",
+      format: "mp4",
     },
     user_id: null,
     created_at: "2024-06-15T00:00:00Z",
     updated_at: "2024-06-15T00:00:00Z",
   },
 ];
+
+/**
+ * Enrich mock stories with URLs from format
+ * This simulates what the API service does
+ * Note: Category is derived in components from format, not set here
+ */
+function enrichMockStory(story: StoryRead & { format?: string }): StoryRead {
+  const format = story.format || story.story_metadata?.format as string || 'raw';
+  
+  // Generate URLs from format + id
+  const urls = generateStoryUrls(story.id, format);
+  
+  return {
+    ...story,
+    // Keep category as-is (components derive display category from format)
+    thumbnail_url: urls.thumbnail_url ?? story.thumbnail_url,
+    image_url: urls.image_url ?? story.image_url,
+  };
+}
+
+// Export enriched stories
+export const mockStories: StoryRead[] = mockStoriesRaw.map(enrichMockStory);
 
 function normalizeCategory(category?: string | null): string | null {
   if (!category) {
@@ -132,9 +169,14 @@ function getFilterPredicate(
   const searchTerm = params.search?.trim().toLowerCase();
 
   return (story: StoryRead) => {
-    const matchesCategory = category
-      ? story.category.toLowerCase() === category
-      : true;
+    // Filter by category: map image/video to format, then check story's derived category
+    let matchesCategory = true;
+    if (category) {
+      // Get format from story metadata to derive category
+      const format = (story.story_metadata?.format as string) || 'raw';
+      const storyCategory = formatToCategory(format);
+      matchesCategory = storyCategory === category;
+    }
 
     if (!searchTerm) {
       return matchesCategory;
