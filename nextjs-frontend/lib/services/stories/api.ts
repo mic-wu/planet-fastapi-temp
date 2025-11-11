@@ -55,12 +55,21 @@ function ensureData<T>(
  * The API returns format field and null for category/URLs
  * Frontend generates these from format + id
  */
+/**
+ * Utility to extract the format from a StoryRead object, with fallbacks.
+ */
+function getStoryFormat(story: StoryRead): string {
+  return (
+    (story.story_metadata?.format as string | undefined) ||
+    // Some legacy stories may have format at the top level
+    ((story as unknown as { format?: string }).format) ||
+    'raw'
+  );
+}
+
 function enrichStory(story: StoryRead): StoryRead {
   // Get format from story_metadata or assume default
-  const format =
-    (story.story_metadata?.format as string) ||
-    (story as unknown as { format?: string }).format ||
-    'raw';
+  const format = getStoryFormat(story);
 
   // Generate URLs from format + id
   const urls = generateStoryUrls(story.id, format);
