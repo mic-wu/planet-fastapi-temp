@@ -1,88 +1,91 @@
-# Implementation Plan: Planet Labs Design System Alignment
+# Implementation Plan: Airbus-style Satellite Image Gallery MVP
 
-**Branch**: `001-airbus-style-satellite` | **Date**: 2025-01-27 | **Spec**: `/specs/001-airbus-style-satellite/spec.md`
+**Branch**: `001-gallery-alignment` | **Date**: 2025-11-04 | **Spec**: [`specs/001-airbus-style-satellite/spec.md`](spec.md)
 **Input**: Feature specification from `/specs/001-airbus-style-satellite/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-Align PlanetStoryExplorer UI with Planet Labs' design system by implementing their signature teal/blue color palette, Montserrat typography, and space-focused visual identity while maintaining the existing satellite image gallery functionality.
+Deliver a Planet-branded gallery landing page that surfaces imagery immediately
+and mirrors the Airbus reference experience. The page must show the grid at the
+top, expose streamlined filters (All/Optical only for now), maintain search,
+pagination, and modal details, and hit the responsiveness targets defined in
+the spec.
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x, React 18+, Next.js 14+  
-**Primary Dependencies**: Tailwind CSS, shadcn/ui, class-variance-authority, Radix UI  
-**Storage**: N/A (UI-only changes)  
-**Testing**: Jest, React Testing Library, Playwright (existing test suite)  
-**Target Platform**: Web browsers (Chrome, Firefox, Safari, Edge)  
-**Project Type**: Web application (frontend-only changes)  
-**Performance Goals**: Maintain existing performance (<2s gallery load, <1s filter updates)  
-**Constraints**: Must preserve existing functionality, responsive design, accessibility  
-**Scale/Scope**: Single feature update affecting UI components and styling
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: TypeScript 5.x, Next.js app router (React 19)  
+**Primary Dependencies**: Next.js 15.5, Tailwind CSS 3.4, Radix UI primitives  
+**Storage**: Static mock data via `lib/services/stories/mock` (no backend call)  
+**Testing**: Jest + React Testing Library, ESLint (`pnpm run lint`)  
+**Target Platform**: Responsive Planet Story Explorer web frontend  
+**Project Type**: Web monorepo (focus on `nextjs-frontend`)  
+**Performance Goals**: SC-001 ≤2s initial load, SC-002 ≤1s filter response  
+**Constraints**: Maintain responsive grid, adhere to updated Planet palette  
+**Scale/Scope**: Tens of stories per page, MVP breadth per spec
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-**Constitution Status**: ✅ PASSED (Post-Phase 1)
-
-**Pre-Phase 0**: ✅ PASSED
-- No constitution violations detected
-- UI-only changes don't affect core principles
-- Maintains existing test coverage requirements
-- Preserves existing functionality and performance
-
-**Post-Phase 1**: ✅ PASSED
-- Design artifacts generated successfully
-- No additional constitution violations introduced
-- Technical approach validated through research
-- Implementation plan maintains existing constraints
-- Performance goals preserved
-- Accessibility standards maintained
+- `.specify/memory/constitution.md` is a placeholder with unnamed principles.
+- No enforceable gates are documented; proceed with standard QA practices.
+- Status: PASS (flag to revisit when constitution gains content).
+- Post-design check: no new constraints introduced; PASS reaffirmed.
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+specs/001-airbus-style-satellite/
+├── plan.md
+├── research.md
+├── data-model.md
+├── quickstart.md
+├── contracts/
+└── tasks.md (Phase 2 via /speckit.tasks)
 ```
 
 ### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
+fastapi_backend/
+└── app/
+    └── ... (API services; unchanged by this feature)
+
 nextjs-frontend/
 ├── app/
-│   ├── globals.css              # Global styles (update with Planet colors)
-│   ├── layout.tsx              # Root layout (update fonts)
-│   ├── page.tsx                # Homepage (update hero section)
-│   └── fonts/                  # Font files (add Montserrat/Gotham)
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── gallery/
+│       └── page.tsx
 ├── components/
-│   ├── ui/                     # shadcn/ui components (update styling)
-│   │   ├── button.tsx          # Update with Planet color variants
-│   │   ├── card.tsx            # Update with Planet styling
-│   │   └── [other components]  # Update all UI components
-│   └── gallery/                # Gallery-specific components
-│       ├── gallery-grid.tsx    # Main gallery component
-│       ├── story-card.tsx      # Individual story cards
-│       └── [other gallery components]
+│   ├── gallery/
+│   └── ui/
 ├── lib/
-│   └── utils.ts                # Utility functions
-└── __tests__/                  # Existing test suite (maintain coverage)
-    └── [test files]
-
-fastapi_backend/                # Backend (no changes needed)
-└── [existing backend structure]
+│   ├── services/stories/
+│   └── mocks/
+├── public/
+└── __tests__/
 ```
 
-**Structure Decision**: Web application with separate frontend/backend. This feature focuses on frontend UI updates only, maintaining the existing Next.js structure while updating styling, colors, and typography to match Planet Labs' design system.
+**Structure Decision**: Work is concentrated in `nextjs-frontend`, adjusting
+`app/` layout and hero, gallery components, Tailwind config, and shared UI
+primitives. Backend remains untouched.
 
 ## Complexity Tracking
 

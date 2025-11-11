@@ -1,3 +1,24 @@
+## Quickstart
+
+1. Install dependencies:
+   ```sh
+   cd /Users/andrewwang/Code/PlanetStoryExplorer/nextjs-frontend
+   pnpm install
+   ```
+2. Run the mock-backed gallery:
+   ```sh
+   pnpm run dev
+   ```
+3. Visit `http://localhost:3000` to verify the slim hero, filters, and grid.
+4. Run lint and tests before shipping:
+   ```sh
+   pnpm run lint
+   pnpm run test
+   ```
+5. Build for production when ready:
+   ```sh
+   pnpm run build
+   ```
 # Quickstart: Planet Labs Design System Implementation
 
 **Feature**: 001-airbus-style-satellite  

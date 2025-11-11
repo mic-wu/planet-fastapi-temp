@@ -1,3 +1,32 @@
+## Entities
+
+### Story
+- `id` (string, UUID): unique identifier used for modal routing
+- `title` (string, 1-80 chars): visible caption; clamp in UI
+- `location` (string | null, ≤60 chars): optional geographic tag
+- `category` (enum: `optical` | `future`): radar removed until data exists
+- `description` (string | null): rich text excerpt for modal body
+- `thumbnailUrl` (string, URL): small preview used in grid
+- `imageUrl` (string, URL): full image for modal
+- `capturedAt` (ISO date string | null): supports future sorting
+- `provider` (string | null): satellite constellation name
+
+### FilterState
+- `category` (enum: `all` | `optical` | `future`)
+- `search` (string)
+- `page` (number ≥1)
+- `limit` (number ∈ {12, 24, 48})
+
+## Relationships
+- `Story.category` maps to `FilterState.category` when filtering.
+- `Story.id` powers modal lookups and pagination anchors.
+- `FilterState` persists in client state (URL/search params optional).
+
+## Validation Rules
+- Any missing `thumbnailUrl` / `imageUrl` triggers placeholder image.
+- URLs must be HTTPS; fallback to CDN proxy for http assets.
+- Empty search returns to `all` without error.
+- `future` category is hidden until populated; keep schema ready.
 # Data Model: Planet Labs Design System Alignment
 
 **Feature**: 001-airbus-style-satellite  

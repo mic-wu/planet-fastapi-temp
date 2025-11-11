@@ -1,3 +1,27 @@
+## Research Findings
+
+### Decision: Slim hero in favor of immediate gallery visibility
+- **Rationale**: The current Planet Stories page keeps a compact top bar with
+  immediate access to the grid, prioritising browsing speed and reducing bounce
+  risk.
+- **Alternatives considered**: Retaining the marketing hero with highlight
+  tiles was rejected because it hides content above the fold and conflicts with
+  mentor feedback about oversized headers.
+
+### Decision: Replace Radar tab with future-ready placeholder category
+- **Rationale**: Mentor clarified that radar data is unavailable, so showing a
+  radar option would mislead users. We will reserve the layout slot for future
+  data categories.
+- **Alternatives considered**: Keeping Radar but disabling it was declined to
+  avoid confusing inactive controls and to keep the UI focused on available
+  data.
+
+### Decision: Use Planet Insights palette tokens via Tailwind CSS
+- **Rationale**: Aligning Tailwind tokens with the Planet Insights design
+  system keeps parity with the reference gallery and supports broader brand
+  reuse.
+- **Alternatives considered**: Ad-hoc colour overrides were dismissed because
+  they increase maintenance burden and drift from the approved palette.
 # Research: Planet Labs Design System Alignment
 
 **Feature**: 001-airbus-style-satellite  

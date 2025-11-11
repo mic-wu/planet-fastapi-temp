@@ -1,0 +1,122 @@
+openapi: 3.1.0
+info:
+  title: Planet Story Explorer Gallery API
+  version: 0.1.0
+servers:
+  - url: https://api.planetstoryexplorer.local
+paths:
+  /stories:
+    get:
+      summary: Retrieve paginated stories for the gallery grid
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            enum: [12, 24, 48]
+          default: 12
+        - in: query
+          name: category
+          schema:
+            type: string
+            enum: [optical, future]
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: sensor
+          schema:
+            type: string
+          description: Reserved for future dataset integrations
+      responses:
+        "200":
+          description: Stories matching filter criteria
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoriesPage"
+  /stories/{storyId}:
+    get:
+      summary: Fetch full details for a single story
+      parameters:
+        - in: path
+          name: storyId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Story metadata and imagery assets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Story"
+        "404":
+          description: Story not found
+components:
+  schemas:
+    Story:
+      type: object
+      required:
+        - id
+        - title
+        - category
+        - thumbnailUrl
+        - imageUrl
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        location:
+          type: string
+          nullable: true
+        category:
+          type: string
+          enum: [optical, future]
+        description:
+          type: string
+          nullable: true
+        thumbnailUrl:
+          type: string
+          format: uri
+        imageUrl:
+          type: string
+          format: uri
+        capturedAt:
+          type: string
+          format: date-time
+          nullable: true
+        provider:
+          type: string
+          nullable: true
+    StoriesPage:
+      type: object
+      required:
+        - items
+        - page
+        - totalPages
+        - totalItems
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Story"
+        page:
+          type: integer
+          minimum: 1
+        totalPages:
+          type: integer
+          minimum: 1
+        totalItems:
+          type: integer
+          minimum: 0
+
