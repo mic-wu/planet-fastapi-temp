@@ -8,6 +8,7 @@ import Link from "next/link";
 import { X } from "lucide-react";
 
 import { StoryRead } from "@/app/openapi-client/types.gen";
+import { formatToCategory } from "@/lib/utils/storyFormat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -75,6 +76,13 @@ export function StoryModal({ story, open, onClose }: StoryModalProps) {
 
   const metadataEntries = Object.entries(story.story_metadata ?? {});
 
+  // Derive category from format for display
+  const format =
+    (story.story_metadata?.format as string) ||
+    (story as unknown as { format?: string }).format ||
+    'raw';
+  const displayCategory = formatToCategory(format);
+
   const handleOverlayClick = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
@@ -130,7 +138,7 @@ export function StoryModal({ story, open, onClose }: StoryModalProps) {
                 <p className="text-muted-foreground">{story.location}</p>
               )}
             </div>
-            <Badge className="w-fit uppercase">{story.category}</Badge>
+            <Badge className="w-fit uppercase">{displayCategory}</Badge>
           </div>
 
           <p className="text-base leading-relaxed text-muted-foreground">

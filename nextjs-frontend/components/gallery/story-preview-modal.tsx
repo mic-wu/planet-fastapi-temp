@@ -24,12 +24,11 @@ import type { StoryRead } from "@/app/openapi-client/types.gen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  NormalizedStoryMetadata,
-  StoryInsight,
   formatMetadataKey,
   formatMetadataValue,
   normalizeStoryMetadata,
 } from "@/components/gallery/story-metadata";
+import { formatToCategory } from "@/lib/utils/storyFormat";
 
 interface StoryPreviewModalProps {
   stories: StoryRead[];
@@ -160,6 +159,13 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
   );
   const metadataEntries = Object.entries(activeStory.story_metadata ?? {});
 
+  // Derive category from format for display
+  const format =
+    (activeStory.story_metadata?.format as string) ||
+    (activeStory as unknown as { format?: string }).format ||
+    'raw';
+  const displayCategory = formatToCategory(format);
+
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6"
@@ -223,7 +229,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
             <aside className="flex w-full max-h-full flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card/90 p-5 backdrop-blur-md lg:flex-[0_0_32%] lg:min-h-0">
               <div className="flex-1 space-y-3 overflow-y-auto pr-1 lg:pr-2">
                 <div className="flex items-center gap-3">
-                  <Badge className="uppercase tracking-wide">{activeStory.category}</Badge>
+                  <Badge className="uppercase tracking-wide">{displayCategory}</Badge>
                   {normalizedMetadata.resolution && (
                     <span className="rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
                       {normalizedMetadata.resolution}

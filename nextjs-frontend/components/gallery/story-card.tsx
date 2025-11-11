@@ -7,6 +7,7 @@ import { StoryRead } from "@/app/openapi-client/types.gen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatToCategory } from "@/lib/utils/storyFormat";
 
 interface StoryCardProps {
   story: StoryRead;
@@ -25,6 +26,13 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
     typeof story.story_metadata?.resolution === "string"
       ? story.story_metadata.resolution
       : undefined;
+
+  // Derive category from format for display
+  const format =
+    (story.story_metadata?.format as string) ||
+    (story as unknown as { format?: string }).format ||
+    'raw';
+  const displayCategory = formatToCategory(format);
 
   const imageSource = !imageError
     ? story.thumbnail_url ?? story.image_url ?? null
@@ -69,7 +77,7 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
               variant="secondary"
               className="border-transparent bg-primary-light/20 text-white backdrop-blur-sm transition hover:bg-primary-light/30"
             >
-              {story.category}
+              {displayCategory}
             </Badge>
             {resolution && (
               <span className="text-xs text-white/80 font-sans">{resolution}</span>

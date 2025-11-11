@@ -120,16 +120,16 @@ export function StoryFilters({
             All
           </TabsTrigger>
           <TabsTrigger
-            value="optical"
+            value="image"
             className="font-sans"
           >
-            Optical
+            Image
           </TabsTrigger>
           <TabsTrigger
-            value="radar"
+            value="video"
             className="font-sans"
           >
-            Radar
+            Video
           </TabsTrigger>
         </TabsList>
       </Tabs>
