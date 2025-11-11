@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Inter } from "next/font/google";
 import "./globals.css";
 import "./fonts/fonts.css";
+import Chatbot from "@/components/ui/chatbot";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
       </head>
       <body className={`${montserrat.variable} ${inter.variable} font-sans`}>
         {children}
+        <Chatbot />
       </body>
     </html>
   );
