@@ -51,11 +51,6 @@ export function StoryModal({ story, open, onClose }: StoryModalProps) {
     };
   }, [open, onClose]);
 
-  useEffect(() => {
-    if (!open) {
-      setImageError(false);
-    }
-  }, [open]);
 
   useEffect(() => {
     setImageError(false);

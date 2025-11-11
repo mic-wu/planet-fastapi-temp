@@ -3,6 +3,7 @@ import { Montserrat, Inter } from "next/font/google";
 import "./globals.css";
 import "./fonts/fonts.css";
 import { TopNav } from "@/components/navigation/top-nav";
+import Chatbot from "@/components/ui/chatbot";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className={`${montserrat.variable} ${inter.variable} font-sans`}>
         <TopNav />
         {children}
+        <Chatbot />
       </body>
     </html>
   );
