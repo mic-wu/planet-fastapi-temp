@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { StoryCard } from "./story-card";
 import { StoryFilters } from "./story-filters";
 import { GalleryPagination } from "./gallery-pagination";
@@ -15,6 +16,10 @@ interface GalleryGridProps {
 }
 
 export function GalleryGrid({ initialData }: GalleryGridProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const [stories, setStories] = useState<StoryRead[]>(initialData.data);
   const [pagination, setPagination] = useState({
     total: initialData.total,
@@ -123,6 +128,49 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
   const hasActiveAdvancedFilters =
     sensorFilter !== null || resolutionFilter !== "any";
 
+  // Initialize state from URL on mount
+  useEffect(() => {
+    const urlSearch = searchParams.get("search") ?? "";
+    const urlCategory = searchParams.get("category");
+    const urlPage = Number.parseInt(searchParams.get("page") ?? "", 10);
+    const urlLimit = Number.parseInt(searchParams.get("limit") ?? "", 10);
+    const urlSensor = searchParams.get("sensor");
+    const urlResolution = searchParams.get("resolution") as
+      | ResolutionFilterOption
+      | null;
+
+    if (urlSearch) {
+      setSearch(urlSearch);
+    }
+    setCategory(urlCategory ?? null);
+    setSensorFilter(urlSensor ?? null);
+    if (urlResolution && ["any", "lte-0.5", "lte-1", "lte-3", "gt-3"].includes(urlResolution)) {
+      setResolutionFilter(urlResolution);
+    }
+
+    setPagination((prev) => ({
+      ...prev,
+      page: Number.isFinite(urlPage) && urlPage > 0 ? urlPage : prev.page,
+      limit: Number.isFinite(urlLimit) && urlLimit > 0 ? urlLimit : prev.limit,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const updateQueryParams = useCallback(
+    (updates: Record<string, string | null | undefined>) => {
+      const next = new URLSearchParams(searchParams.toString());
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === "") {
+          next.delete(key);
+        } else {
+          next.set(key, value);
+        }
+      });
+      router.replace(`${pathname}?${next.toString()}`);
+    },
+    [pathname, router, searchParams],
+  );
+
   const fetchStories = useCallback(
     async (
       page: number,
@@ -162,30 +210,45 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
       const normalizedSearch = searchTerm.trim();
       setSearch(normalizedSearch);
       fetchStories(1, pagination.limit, normalizedSearch, category);
+      updateQueryParams({
+        search: normalizedSearch || null,
+        page: "1",
+      });
     },
-    [fetchStories, pagination.limit, category],
+    [fetchStories, pagination.limit, category, updateQueryParams],
   );
 
   const handleCategoryChange = useCallback(
     (categoryFilter: string | null) => {
       setCategory(categoryFilter);
       fetchStories(1, pagination.limit, search, categoryFilter);
+      updateQueryParams({
+        category: categoryFilter,
+        page: "1",
+      });
     },
-    [fetchStories, pagination.limit, search],
+    [fetchStories, pagination.limit, search, updateQueryParams],
   );
 
   const handlePageChange = useCallback(
     (page: number) => {
       fetchStories(page, pagination.limit, search, category);
+      updateQueryParams({
+        page: String(page),
+      });
     },
-    [fetchStories, pagination.limit, search, category],
+    [fetchStories, pagination.limit, search, category, updateQueryParams],
   );
 
   const handlePageSizeChange = useCallback(
     (limit: number) => {
       fetchStories(1, limit, search, category);
+      updateQueryParams({
+        page: "1",
+        limit: String(limit),
+      });
     },
-    [fetchStories, search, category],
+    [fetchStories, search, category, updateQueryParams],
   );
 
   const handleStoryClick = (story: StoryRead) => {
@@ -212,12 +275,29 @@ export function GalleryGrid({ initialData }: GalleryGridProps) {
         categoryValue={category || "all"}
         availableSensors={availableSensors}
         sensorValue={sensorFilter}
-        onSensorChange={setSensorFilter}
+        onSensorChange={(value) => {
+          setSensorFilter(value);
+          updateQueryParams({
+            sensor: value,
+            page: "1",
+          });
+        }}
         resolutionValue={resolutionFilter}
-        onResolutionChange={setResolutionFilter}
+        onResolutionChange={(value) => {
+          setResolutionFilter(value);
+          updateQueryParams({
+            resolution: value,
+            page: "1",
+          });
+        }}
         onClearAdvancedFilters={() => {
           setSensorFilter(null);
           setResolutionFilter("any");
+          updateQueryParams({
+            sensor: null,
+            resolution: null,
+            page: "1",
+          });
         }}
         hasActiveAdvancedFilters={hasActiveAdvancedFilters}
       />

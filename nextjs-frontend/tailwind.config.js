@@ -20,13 +20,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "Inter", "sans-serif"],
-        heading: [
-          "var(--font-gotham)",
-          '"Gotham SSm A"',
-          '"Gotham SSm B"',
-          "Montserrat",
-          "sans-serif",
-        ],
+        heading: ["var(--font-montserrat)", "Montserrat", "sans-serif"],
       },
       colors: {
         background: "hsl(var(--background))",
