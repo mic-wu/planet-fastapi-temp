@@ -2,7 +2,7 @@
 
 1. Install dependencies:
    ```sh
-   cd /Users/andrewwang/Code/PlanetStoryExplorer/nextjs-frontend
+   cd nextjs-frontend
    pnpm install
    ```
 2. Run the mock-backed gallery:
