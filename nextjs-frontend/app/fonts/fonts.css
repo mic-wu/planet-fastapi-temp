@@ -1,6 +1,6 @@
 /* Planet Labs Font Configuration */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gotham+SSm:wght@400;500;600;700&display=swap');
+/* Fonts are loaded via Next.js next/font API in layout.tsx for optimal performance */
+/* "Gotham SSm" is a proprietary font and falls back to Montserrat */
 
 /* Font fallback definitions */
 .font-montserrat {
