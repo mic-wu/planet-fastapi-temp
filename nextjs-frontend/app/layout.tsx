@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Inter } from "next/font/google";
 import "./globals.css";
 import "./fonts/fonts.css";
+import { TopNav } from "@/components/navigation/top-nav";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${montserrat.variable} ${inter.variable} font-sans`}>
+        <TopNav />
         {children}
       </body>
     </html>
