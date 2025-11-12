@@ -34,12 +34,17 @@ class Item(Base):
 
 
 class Story(Base):
-    __tablename__ = "stories"
+    __tablename__ = "planet_stories"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String, primary_key=True)
     title = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    author = Column(String, nullable=True)
+    format = Column(String, nullable=False)
+    created = Column(DateTime(timezone=True), nullable=False)
+    updated = Column(DateTime(timezone=True), nullable=False)
+    center_long = Column(String, nullable=True)  # Using String to match Numeric from Supabase
+    center_lat = Column(String, nullable=True)
+    view_link = Column(String, nullable=True)
 
     def __repr__(self) -> str:  # pragma: no cover - convenience
         return f"<Story id={self.id} title={self.title!r}>"
