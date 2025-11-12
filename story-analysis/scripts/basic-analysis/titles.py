@@ -18,15 +18,20 @@ def load_data():
     with open(INPUT_FILE, 'r') as f:
         return json.load(f)
 
+
 stories_raw = load_data()
 
+
 def naive_lang_detect(st):
-    if len(st) < 5: return False
+    if len(st) < 5:
+        return False
 
     char_ratio = sum(c.isalpha() for c in st) / len(st)
-    if (char_ratio < 0.44): return False
+    if (char_ratio < 0.44):
+        return False
 
     return True
+
 
 all_titles = [story.get('title', '') for story in stories_raw]
 eng_titles = [t for t in all_titles if naive_lang_detect(t)]

@@ -29,9 +29,10 @@ TABLE_INSERT_STATEMENT = '''
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 '''
 
+
 def create_and_load_table(conn, filename):
     conn.execute(TABLE_CREATE_STATEMENT)
-    
+
     with open(filename, 'r') as f:
         stories_json = json.load(f)
 
@@ -58,5 +59,5 @@ def create_and_load_table(conn, filename):
             story.get("zoom"),
             story.get("my_framecount")
         ))
-    
+
     conn.executemany(TABLE_INSERT_STATEMENT, batch_insert_rows)

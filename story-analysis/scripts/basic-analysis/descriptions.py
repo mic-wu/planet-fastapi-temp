@@ -14,9 +14,11 @@ def load_data():
     with open(INPUT_FILE, 'r') as f:
         return json.load(f)
 
+
 stories_raw = load_data()
 
-all_descs = [story for story in stories_raw if story.get('description', '').strip() != '']
+all_descs = [story for story in stories_raw if story.get(
+    'description', '').strip() != '']
 
 formatted = [
     f'{("https://www.planet.com/stories/"+story.get("id")).rjust(100)}: {repr(story.get("description"))}' for story in all_descs
