@@ -171,17 +171,17 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
       <div className="relative flex h-full max-h-[660px] w-full max-w-5xl items-center justify-center">
         <button
           type="button"
-          className="absolute -right-2 -top-2 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-foreground shadow-lg transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="absolute -right-2 -top-2 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           onClick={onClose}
           aria-label="Close preview"
         >
           <X className="h-5 w-5" />
         </button>
 
-        <div className="group relative flex h-full w-full min-h-0 flex-col rounded-3xl border border-border/50 bg-background/95 shadow-2xl transition-transform duration-150 ease-out lg:h-[65vh]">
+        <div className="group relative flex h-full w-full min-h-0 flex-col rounded-3xl border border-border bg-card shadow-2xl transition-transform duration-150 ease-out lg:h-[65vh]">
           <button
             type="button"
-            className="absolute left-0 top-1/2 z-30 hidden h-12 w-12 -translate-x-[120%] -translate-y-1/2 items-center justify-center rounded-full border border-border/60 bg-background/70 text-foreground/80 shadow-lg transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:flex"
+            className="absolute left-0 top-1/2 z-30 hidden h-12 w-12 -translate-x-[120%] -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:flex"
             onClick={() => cycleStory(-1)}
             aria-label="View previous story"
           >
@@ -190,7 +190,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
 
           <button
             type="button"
-            className="absolute right-0 top-1/2 z-30 hidden h-12 w-12 -translate-y-1/2 translate-x-[120%] items-center justify-center rounded-full border border-border/60 bg-background/70 text-foreground/80 shadow-lg transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:flex"
+            className="absolute right-0 top-1/2 z-30 hidden h-12 w-12 -translate-y-1/2 translate-x-[120%] items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:flex"
             onClick={() => cycleStory(1)}
             aria-label="View next story"
           >
@@ -201,7 +201,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
             className={`flex flex-1 min-h-0 flex-col gap-4 p-4 transition-all duration-300 ease-in-out lg:flex-row lg:gap-6 lg:p-8 ${fadeIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
           >
             <div className="flex flex-1 justify-center lg:flex-[0_0_65%]">
-              <div className={`relative h-[260px] w-full overflow-hidden rounded-2xl border border-border/40 bg-muted/30 shadow-inner lg:h-full transition-all duration-300 ease-in-out ${fadeIn ? "scale-100" : "scale-[0.98]"}`}>
+              <div className={`relative h-[260px] w-full overflow-hidden rounded-2xl border border-border bg-surface-muted shadow-inner transition-all duration-300 ease-in-out lg:h-full ${fadeIn ? "scale-100" : "scale-[0.98]"}`}>
                 {imageSource ? (
                   <Image
                     src={imageSource}
@@ -213,19 +213,19 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                     priority
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+                  <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground font-sans">
                     Image unavailable
                   </div>
                 )}
               </div>
             </div>
 
-            <aside className="flex w-full max-h-full flex-col gap-6 overflow-hidden rounded-2xl border border-border/40 bg-background/80 p-5 backdrop-blur-md lg:flex-[0_0_32%] lg:min-h-0">
+            <aside className="flex w-full max-h-full flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card/90 p-5 backdrop-blur-md lg:flex-[0_0_32%] lg:min-h-0">
               <div className="flex-1 space-y-3 overflow-y-auto pr-1 lg:pr-2">
                 <div className="flex items-center gap-3">
-                  <Badge className="uppercase">{activeStory.category}</Badge>
+                  <Badge className="uppercase tracking-wide">{activeStory.category}</Badge>
                   {normalizedMetadata.resolution && (
-                    <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                    <span className="rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
                       {normalizedMetadata.resolution}
                     </span>
                   )}
@@ -234,18 +234,18 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                 <div className="space-y-1">
                   <h2
                     id="story-preview-title"
-                    className="text-xl font-semibold leading-tight"
+                    className="text-xl font-heading font-semibold leading-tight text-foreground"
                   >
                     {activeStory.title}
                   </h2>
                   {activeStory.location && (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground font-sans">
                       {activeStory.location}
                     </p>
                   )}
                 </div>
 
-                <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">
+                <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground font-sans">
                   {activeStory.description ||
                     normalizedMetadata.impactSummary ||
                     "High-resolution capture available for mission analysis."}
@@ -255,7 +255,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                   {(normalizedMetadata.capturedAt ||
                     normalizedMetadata.sensor ||
                     normalizedMetadata.satellite) && (
-                      <dl className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                      <dl className="grid grid-cols-2 gap-2 text-xs text-muted-foreground font-sans">
                         {normalizedMetadata.capturedAt && (
                           <div>
                             <dt className="uppercase tracking-wide">Captured</dt>
@@ -278,7 +278,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                               <dt className="uppercase tracking-wide">
                                 Satellite
                               </dt>
-                              <dd className="font-medium text-foreground">
+                            <dd className="font-medium text-foreground">
                                 {normalizedMetadata.satellite}
                               </dd>
                             </div>
@@ -306,7 +306,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant="outline"
-                    className="gap-2"
+                    className="gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                     asChild={Boolean(normalizedMetadata.downloadUrl)}
                     disabled={!normalizedMetadata.downloadUrl}
                   >
@@ -325,7 +325,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                     )}
                   </Button>
 
-                  <Button variant="outline" className="gap-2" asChild>
+                  <Button variant="outline" className="gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" asChild>
                     <a
                       href={buildShareLink(activeStory.id, activeStory.title)}
                       target="_blank"
@@ -337,7 +337,7 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                 </div>
 
                 {metadataEntries.length > 0 && (
-                  <details className="rounded-lg border border-border/60 bg-muted/10 p-4 text-xs text-muted-foreground">
+                  <details className="rounded-lg border border-border bg-surface-raised p-4 text-xs text-muted-foreground font-sans">
                     <summary className="cursor-pointer font-semibold text-foreground">
                       Metadata summary
                     </summary>
@@ -363,14 +363,14 @@ export const StoryPreviewModal = memo(function StoryPreviewModal({
                   </details>
                 )}
 
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground font-sans">
                   Tip: use ← / → to browse previews, Esc to close
                 </p>
               </div>
             </aside>
           </div>
 
-          <div className="flex items-center justify-between border-t border-border/60 bg-background/90 px-4 py-3 text-xs text-muted-foreground lg:hidden">
+          <div className="flex items-center justify-between border-t border-border bg-surface-raised px-4 py-3 text-xs text-muted-foreground font-sans lg:hidden">
             <span>
               {activeIndex + 1} of {stories.length} stories
             </span>

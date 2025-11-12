@@ -1,5 +1,6 @@
 import { GalleryGrid } from "@/components/gallery/gallery-grid";
 import { getStories } from "@/components/actions/stories-action";
+import { HeroSection } from "@/components/hero/hero-section";
 
 export default async function Home() {
   const initialData = await getStories({
@@ -9,24 +10,8 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white">
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-4xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Image Gallery - Earth as seen by a Satellite
-            </h1>
-            <p className="text-xl text-slate-300 mb-8">
-              Discover crystal-clear perspectives of our planet captured by the
-              Planet Story Explorer constellation.
-            </p>
-            <p className="text-slate-400">
-              Switch between optical and radar imagery, search by location, and
-              explore rich metadata from our satellites.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="container mx-auto px-4 py-8">
+      <HeroSection />
+      <div className="container mx-auto px-4 py-10 md:py-14">
         <GalleryGrid initialData={initialData} />
       </div>
     </div>

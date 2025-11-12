@@ -3,58 +3,149 @@
 @tailwind utilities;
 @layer base {
   :root {
+    /* Font Variables */
+    --font-montserrat: "Montserrat", sans-serif;
+    --font-gotham: '"Gotham SSm A", "Gotham SSm B", Montserrat, sans-serif';
+
+    /* Planet Insights palette */
     --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --foreground: 230 19% 13%;
+
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: var(--foreground);
+
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --popover-foreground: var(--foreground);
+
+    --primary: 187 100% 45%;
+    --primary-dark: 188 90% 27%;
+    --primary-light: 187 83% 71%;
+    --primary-soft: 187 100% 92%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 190 15% 84%;
+    --secondary-dark: 196 15% 62%;
+    --secondary-light: 190 15% 92%;
+    --secondary-foreground: 230 19% 13%;
+
+    --muted: 190 15% 94%;
+    --muted-foreground: 213 16% 40%;
+
+    --accent: var(--primary-light);
+    --accent-foreground: 192 89% 17%;
+
+    --destructive: 5 100% 65%;
+    --destructive-dark: 0 77% 46%;
+    --destructive-light: 5 100% 77%;
+    --destructive-foreground: 0 0% 100%;
+
+    --info: var(--primary);
+    --info-dark: 189 100% 33%;
+    --info-light: var(--primary-light);
+    --info-foreground: 0 0% 100%;
+
+    --onboarding: 52 100% 49%;
+    --onboarding-dark: 46 100% 42%;
+    --onboarding-light: 54 100% 77%;
+    --onboarding-foreground: 230 19% 13%;
+
+    --warning: 33 96% 55%;
+    --warning-dark: 31 93% 43%;
+    --warning-light: 35 100% 68%;
+    --warning-foreground: 230 19% 13%;
+
+    --success: 138 62% 53%;
+    --success-dark: 146 89% 33%;
+    --success-light: 131 65% 73%;
+    --success-foreground: 0 0% 100%;
+
+    --surface-muted: 190 15% 94%;
+    --surface-subtle: 190 15% 90%;
+    --surface-emphasis: 230 19% 18%;
+    --surface-border: 198 18% 84%;
+    --surface-raised: 190 15% 96%;
+
+    --text-muted: 213 16% 40%;
+    --text-subtle: 210 12% 55%;
+    --text-inverse: 0 0% 100%;
+
+    --border: var(--surface-border);
+    --input: var(--surface-border);
+    --ring: var(--primary);
+    --radius: 0.75rem;
+
+    --chart-1: var(--primary);
+    --chart-2: var(--success);
+    --chart-3: var(--warning);
+    --chart-4: var(--info);
+    --chart-5: var(--onboarding);
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: 230 19% 13%;
+    --foreground: 0 0% 100%;
+
+    --card: 229 22% 18%;
+    --card-foreground: var(--foreground);
+
+    --popover: 229 22% 18%;
+    --popover-foreground: var(--foreground);
+
+    --primary: 187 100% 45%;
+    --primary-dark: 189 100% 35%;
+    --primary-light: 187 83% 60%;
+    --primary-soft: 189 100% 25%;
+    --primary-foreground: 0 0% 6%;
+
+    --secondary: 215 16% 24%;
+    --secondary-dark: 215 16% 32%;
+    --secondary-light: 215 16% 28%;
+    --secondary-foreground: var(--foreground);
+
+    --muted: 216 16% 24%;
+    --muted-foreground: 214 12% 72%;
+
+    --accent: 189 100% 33%;
+    --accent-foreground: var(--foreground);
+
+    --destructive: 355 70% 55%;
+    --destructive-dark: 342 75% 45%;
+    --destructive-light: 2 100% 68%;
+    --destructive-foreground: 0 0% 100%;
+
+    --info: 187 100% 45%;
+    --info-dark: 189 100% 33%;
+    --info-light: 187 83% 60%;
+    --info-foreground: 0 0% 6%;
+
+    --onboarding: 52 100% 49%;
+    --onboarding-dark: 46 100% 42%;
+    --onboarding-light: 54 100% 60%;
+    --onboarding-foreground: 230 19% 13%;
+
+    --warning: 33 96% 55%;
+    --warning-dark: 31 93% 43%;
+    --warning-light: 33 90% 65%;
+    --warning-foreground: 230 19% 13%;
+
+    --success: 138 62% 53%;
+    --success-dark: 146 89% 33%;
+    --success-light: 138 60% 60%;
+    --success-foreground: 0 0% 6%;
+
+    --surface-muted: 216 16% 22%;
+    --surface-subtle: 216 16% 28%;
+    --surface-emphasis: 0 0% 100%;
+    --surface-border: 217 18% 30%;
+    --surface-raised: 215 16% 26%;
+
+    --text-muted: 215 12% 70%;
+    --text-subtle: 215 12% 60%;
+    --text-inverse: 230 19% 13%;
+
+    --border: var(--surface-border);
+    --input: var(--surface-border);
+    --ring: 187 83% 64%;
   }
 }
 

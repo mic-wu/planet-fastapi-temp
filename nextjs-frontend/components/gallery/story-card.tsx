@@ -32,7 +32,7 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
 
   return (
     <Card
-      className="group cursor-pointer overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+      className="group cursor-pointer overflow-hidden border border-border bg-card text-foreground shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-lg"
       onClick={handleClick}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -47,32 +47,32 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
             priority={false}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted text-sm font-medium text-muted-foreground">
+          <div className="flex h-full w-full items-center justify-center bg-surface-muted text-sm font-medium text-muted-foreground font-sans">
             Image unavailable
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-text-inverse/80 via-text-inverse/10 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
           <h3
-            className="mb-1 line-clamp-2 text-lg font-semibold"
+            className="mb-1 line-clamp-2 text-lg font-heading font-semibold"
             title={story.title}
           >
             {story.title}
           </h3>
           {story.location && (
-            <p className="mb-2 text-sm text-white/90" title={story.location}>
+            <p className="mb-2 text-sm text-white/80 font-sans" title={story.location}>
               {story.location}
             </p>
           )}
           <div className="flex items-center justify-between">
             <Badge
               variant="secondary"
-              className="border-white/30 bg-white/20 text-white hover:bg-white/30"
+              className="border-transparent bg-primary-light/20 text-white backdrop-blur-sm transition hover:bg-primary-light/30"
             >
               {story.category}
             </Badge>
             {resolution && (
-              <span className="text-xs text-white/80">{resolution}</span>
+              <span className="text-xs text-white/80 font-sans">{resolution}</span>
             )}
           </div>
         </div>
@@ -80,7 +80,7 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
       <CardContent className="p-4 space-y-3">
         {story.description && (
           <p
-            className="line-clamp-2 text-sm text-muted-foreground"
+            className="line-clamp-2 text-sm text-muted-foreground font-sans"
             title={story.description}
           >
             {story.description}

@@ -18,6 +18,10 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        sans: ["var(--font-inter)", "Inter", "sans-serif"],
+        heading: ["var(--font-montserrat)", "Montserrat", "sans-serif"],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -31,10 +35,15 @@ module.exports = {
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
+          dark: "hsl(var(--primary-dark))",
+          light: "hsl(var(--primary-light))",
+          soft: "hsl(var(--primary-soft))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
+          dark: "hsl(var(--secondary-dark))",
+          light: "hsl(var(--secondary-light))",
           foreground: "hsl(var(--secondary-foreground))",
         },
         muted: {
@@ -47,7 +56,44 @@ module.exports = {
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
+          dark: "hsl(var(--destructive-dark))",
+          light: "hsl(var(--destructive-light))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          dark: "hsl(var(--info-dark))",
+          light: "hsl(var(--info-light))",
+          foreground: "hsl(var(--info-foreground))",
+        },
+        onboarding: {
+          DEFAULT: "hsl(var(--onboarding))",
+          dark: "hsl(var(--onboarding-dark))",
+          light: "hsl(var(--onboarding-light))",
+          foreground: "hsl(var(--onboarding-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          dark: "hsl(var(--warning-dark))",
+          light: "hsl(var(--warning-light))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          dark: "hsl(var(--success-dark))",
+          light: "hsl(var(--success-light))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        surface: {
+          muted: "hsl(var(--surface-muted))",
+          subtle: "hsl(var(--surface-subtle))",
+          raised: "hsl(var(--surface-raised))",
+          emphasis: "hsl(var(--surface-emphasis))",
+        },
+        text: {
+          muted: "hsl(var(--text-muted))",
+          subtle: "hsl(var(--text-subtle))",
+          inverse: "hsl(var(--text-inverse))",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
