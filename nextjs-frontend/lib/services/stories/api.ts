@@ -11,6 +11,7 @@ import type {
   StoriesService,
 } from "@/lib/services/stories/types";
 import { generateStoryUrls } from "@/lib/utils/storyUrls";
+import type { StoryFormat } from "@/lib/utils/storyFormat";
 
 // Type alias for compatibility
 type PaginatedResponse = PaginatedStoriesResponse;
@@ -55,13 +56,14 @@ function ensureData<T>(
 /**
  * Utility to extract the format from a StoryRead object, with fallbacks.
  */
-function getStoryFormat(story: StoryRead): string {
-  return (
-    (story.story_metadata?.format as string | undefined) ||
+function getStoryFormat(story: StoryRead): StoryFormat {
+  const format = (story.story_metadata?.format as string | undefined) ||
     // Some legacy stories may have format at the top level
     (story as unknown as { format?: string }).format ||
-    "raw"
-  );
+    "raw";
+  
+  // Return the format as StoryFormat, defaulting to 'raw' for any unknown values
+  return format === "mp4" ? "mp4" : "raw";
 }
 
 function enrichStory(story: StoryRead): StoryRead {
