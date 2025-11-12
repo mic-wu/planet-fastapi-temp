@@ -34,6 +34,8 @@ app.add_middleware(
 conn = None
 
 # Filter parsing utilities
+
+
 class FilterParser:
     """Parse filter string into SQL clauses"""
 
@@ -52,7 +54,6 @@ class FilterParser:
         """
         where_clauses = []
         params = []
-        remaining_parts = []
 
         if not filter_str:
             return where_clauses, params, ""
@@ -143,14 +144,18 @@ class FilterParser:
         return where_clauses, params, remaining_text
 
 # Request models
+
+
 class GeoFilter(BaseModel):
     lat: float
     lng: float
     radius: float = 50  # km
 
+
 class DateFilter(BaseModel):
     start: Optional[str] = None  # ISO date string
     end: Optional[str] = None
+
 
 class SearchRequest(BaseModel):
     text: Optional[str] = None  # Search in title, author, description
@@ -161,29 +166,32 @@ class SearchRequest(BaseModel):
     format: Optional[str] = None  # Filter by format (mp4, raw, etc)
     public: Optional[bool] = None  # Filter by public status
 
+
 @app.on_event("startup")
 async def startup():
     """Load data into DuckDB on startup"""
 
     global conn
     print("Loading data into DuckDB...")
-    
+
     conn = duckdb.connect(':memory:')
-    
+
     data_insert.create_and_load_table(conn, DATA_FILE)
 
     conn.execute("INSTALL spatial")
     conn.execute("LOAD spatial")
-    
+
     count = conn.execute("SELECT COUNT(*) FROM stories").fetchone()[0]
     print(f"✓ Loaded {count} stories into DuckDB")
     print(f"✓ Server ready at http://localhost:8000")
     print(f"✓ API docs at http://localhost:8000/docs")
 
+
 @app.get("/")
 async def root():
     """API info"""
     return "this is an API. go to /docs for documentation."
+
 
 @app.get("/api/all")
 async def get_all(limit: int = 100, offset: int = 0, filter: str = ""):
@@ -204,13 +212,15 @@ async def get_all(limit: int = 100, offset: int = 0, filter: str = ""):
     """
     try:
         # Parse filter string
-        where_clauses, params, free_text = FilterParser.parse_filter_string(filter)
+        where_clauses, params, free_text = FilterParser.parse_filter_string(
+            filter)
 
         print(where_clauses, params, free_text)
 
         # Add free-text search if present
         if free_text:
-            where_clauses.append("(title ILIKE ? OR author ILIKE ? OR description ILIKE ?)")
+            where_clauses.append(
+                "(title ILIKE ? OR author ILIKE ? OR description ILIKE ?)")
             text_pattern = f'%{free_text}%'
             params.extend([text_pattern, text_pattern, text_pattern])
 
@@ -235,7 +245,8 @@ async def get_all(limit: int = 100, offset: int = 0, filter: str = ""):
             SELECT COUNT(*) FROM stories
             WHERE {where_sql}
         """
-        total = conn.execute(count_query, params[:-2]).fetchone()[0]  # exclude limit/offset
+        total = conn.execute(
+            count_query, params[:-2]).fetchone()[0]  # exclude limit/offset
 
         # Get unique authors with same filters
         authors_query = f"""
@@ -255,17 +266,19 @@ async def get_all(limit: int = 100, offset: int = 0, filter: str = ""):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Filter error: {str(e)}")
 
+
 @app.get("/api/stats")
 async def get_stats():
     """Get database statistics"""
     try:
         total = conn.execute("SELECT COUNT(*) FROM stories").fetchone()[0]
-        authors = conn.execute("SELECT COUNT(DISTINCT author) FROM stories").fetchone()[0]
+        authors = conn.execute(
+            "SELECT COUNT(DISTINCT author) FROM stories").fetchone()[0]
         date_range = conn.execute("""
             SELECT MIN(created) as min_date, MAX(created) as max_date 
             FROM stories
         """).fetchone()
-        
+
         return {
             "total_stories": total,
             "unique_authors": authors,
@@ -276,6 +289,7 @@ async def get_stats():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/api/schema")
 async def get_schema():
@@ -288,13 +302,13 @@ async def get_schema():
             WHERE table_name = 'stories'
             ORDER BY ordinal_position
         """).fetchdf()
-        
+
         # Get row count
         count = conn.execute("SELECT COUNT(*) FROM stories").fetchone()[0]
-        
+
         # Get sample row
         sample = conn.execute("SELECT * FROM stories LIMIT 1").fetchdf()
-        
+
         return {
             "table_name": "stories",
             "row_count": count,
@@ -304,22 +318,23 @@ async def get_schema():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/api/search")
 async def search(request: SearchRequest):
     """
     Unified search with multiple filters
-    
+
     Example requests:
-    
+
     1. Text only:
     {"text": "forest fire"}
-    
+
     2. Text + geo:
     {"text": "deforestation", "geo": {"lat": -3.0, "lng": -60.0, "radius": 100}}
-    
+
     3. Date range + author:
     {"date": {"start": "2025-01-01", "end": "2025-12-31"}, "author": "NASA"}
-    
+
     4. All filters combined:
     {
         "text": "agriculture",
@@ -334,13 +349,14 @@ async def search(request: SearchRequest):
         # Build dynamic SQL query
         where_clauses = []
         params = []
-        
+
         # Text search in title, author, description
         if request.text:
-            where_clauses.append("(title ILIKE ? OR author ILIKE ? OR description ILIKE ?)")
+            where_clauses.append(
+                "(title ILIKE ? OR author ILIKE ? OR description ILIKE ?)")
             text_pattern = f'%{request.text}%'
             params.extend([text_pattern, text_pattern, text_pattern])
-        
+
         # Geographic filter
         geo_select = ""
         if request.geo:
@@ -350,7 +366,8 @@ async def search(request: SearchRequest):
                     ST_Point(center_lon, center_lat)
                 ) / 1000 <= ?
             """)
-            params.extend([request.geo.lng, request.geo.lat, request.geo.radius])
+            params.extend(
+                [request.geo.lng, request.geo.lat, request.geo.radius])
             # Add distance to select for sorting
             geo_select = f""",
                 ST_Distance(
@@ -358,7 +375,7 @@ async def search(request: SearchRequest):
                     ST_Point(center_lon, center_lat)
                 ) / 1000 as distance_km
             """
-        
+
         # Date range filter
         if request.date:
             if request.date.start:
@@ -367,28 +384,28 @@ async def search(request: SearchRequest):
             if request.date.end:
                 where_clauses.append("created <= ?")
                 params.append(request.date.end)
-        
+
         # Author filter
         if request.author:
             where_clauses.append("author ILIKE ?")
             params.append(f'%{request.author}%')
-        
+
         # Format filter
         if request.format:
             where_clauses.append("format = ?")
             params.append(request.format)
-        
+
         # Public filter
         if request.public is not None:
             where_clauses.append("public = ?")
             params.append(request.public)
-        
+
         # Build WHERE clause
         where_sql = " AND ".join(where_clauses) if where_clauses else "1=1"
-        
+
         # Order by distance if geo search, otherwise by date
         order_by = "distance_km" if request.geo else "created DESC"
-        
+
         # Execute query
         query = f"""
             SELECT id, title, author, description, created, updated,
@@ -399,15 +416,16 @@ async def search(request: SearchRequest):
             ORDER BY {order_by}
             LIMIT 100
         """
-        
+
         result = conn.execute(query, params).fetchdf()
-        
+
         return {
             "count": len(result),
             "results": result.to_dict(orient='records')
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/api/story/{story_id}")
 async def get_story(story_id: str):
@@ -420,10 +438,10 @@ async def get_story(story_id: str):
             FROM stories
             WHERE id = ?
         """, [story_id]).fetchdf()
-        
+
         if len(result) == 0:
             raise HTTPException(status_code=404, detail="Story not found")
-        
+
         return result.to_dict(orient='records')[0]
     except HTTPException:
         raise
