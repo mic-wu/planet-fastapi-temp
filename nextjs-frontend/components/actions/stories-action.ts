@@ -15,6 +15,6 @@ export async function getStoryById(storyId: string) {
   return getStoryByIdFromService(storyId);
 }
 
-export async function searchStories(query: string, category?: string) {
+export async function searchStories(query: string, category?: 'image' | 'video') {
   return searchStoriesFromService(query, category);
 }
