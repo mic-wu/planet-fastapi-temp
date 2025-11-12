@@ -1,0 +1,30 @@
+# PlanetStoryExplorer Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-10-20
+
+## Active Technologies
+- TypeScript 5.x (frontend), Python 3.12 (backend) + Next.js 15, React 19, FastAPI, SQLAlchemy, shadcn/ui (Radix UI), TailwindCSS (001-airbus-style-satellite)
+- TypeScript 5.x, React 18+, Next.js 14+ + Tailwind CSS, shadcn/ui, class-variance-authority, Radix UI (001-airbus-style-satellite)
+- N/A (UI-only changes) (001-airbus-style-satellite)
+- TypeScript 5.x, Next.js app router (React 19) + Next.js 15.5, Tailwind CSS 3.4, Radix UI primitives (001-gallery-alignment)
+- Static mock data via `lib/services/stories/mock` (no backend call) (001-gallery-alignment)
+
+## Project Structure
+```
+src/
+tests/
+```
+
+## Commands
+cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] pytest [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] ruff check .
+
+## Code Style
+TypeScript 5.x (frontend), Python 3.12 (backend): Follow standard conventions
+
+## Recent Changes
+- 001-gallery-alignment: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+- 001-gallery-alignment: Added TypeScript 5.x, Next.js app router (React 19) + Next.js 15.5, Tailwind CSS 3.4, Radix UI primitives
+- 001-airbus-style-satellite: Added TypeScript 5.x, React 18+, Next.js 14+ + Tailwind CSS, shadcn/ui, class-variance-authority, Radix UI
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

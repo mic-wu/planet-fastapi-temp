@@ -1,0 +1,12 @@
+/* Planet Labs Font Configuration */
+/* Fonts are loaded via Next.js next/font API in layout.tsx for optimal performance */
+/* "Gotham SSm" is a proprietary font and falls back to Montserrat */
+
+/* Font fallback definitions */
+.font-montserrat {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.font-gotham {
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}

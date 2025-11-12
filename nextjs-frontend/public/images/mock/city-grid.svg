@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs>
+    <linearGradient id="city" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#03071e"/>
+      <stop offset="60%" stop-color="#370617"/>
+      <stop offset="100%" stop-color="#f07167"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="#03045e" />
+  <g stroke="#ffd166" stroke-width="6" opacity="0.25">
+    <path d="M120 60 V420" />
+    <path d="M220 60 V420" />
+    <path d="M320 60 V420" />
+    <path d="M420 60 V420" />
+    <path d="M520 60 V420" />
+    <path d="M60 120 H580" />
+    <path d="M60 220 H580" />
+    <path d="M60 320 H580" />
+    <path d="M60 420 H580" />
+  </g>
+  <rect x="160" y="140" width="320" height="200" fill="url(#city)" opacity="0.7"/>
+  <text x="50%" y="82%" font-family="Inter, Arial, sans-serif" font-size="48" text-anchor="middle" fill="#ffe8d6" opacity="0.9">
+    City Night Grid
+  </text>
+</svg>

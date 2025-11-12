@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs>
+    <linearGradient id="forest" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f4c5c"/>
+      <stop offset="50%" stop-color="#3a7d44"/>
+      <stop offset="100%" stop-color="#cbe896"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#forest)" />
+  <text x="50%" y="82%" font-family="Inter, Arial, sans-serif" font-size="48" text-anchor="middle" fill="#ffffff" opacity="0.9">
+    Forest Regrowth
+  </text>
+</svg>

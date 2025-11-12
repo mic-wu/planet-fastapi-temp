@@ -1,0 +1,271 @@
+openapi: 3.0.3
+info:
+  title: Planet Labs Design System API
+  description: API contract for Planet Labs design system implementation
+  version: 1.0.0
+  contact:
+    name: PlanetStoryExplorer Team
+    email: dev@planetstoryexplorer.com
+
+paths:
+  /api/design-tokens:
+    get:
+      summary: Get design tokens
+      description: Retrieve Planet Labs design system tokens including colors, typography, and spacing
+      responses:
+        '200':
+          description: Design tokens retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  colors:
+                    type: object
+                    properties:
+                      primary:
+                        type: object
+                        properties:
+                          teal:
+                            type: string
+                            example: "rgb(0, 157, 165)"
+                          darkTeal:
+                            type: string
+                            example: "rgb(0, 127, 153)"
+                          lightTeal:
+                            type: string
+                            example: "rgb(28, 190, 201)"
+                      secondary:
+                        type: object
+                        properties:
+                          blue:
+                            type: string
+                            example: "rgb(0, 203, 230)"
+                          darkBlue:
+                            type: string
+                            example: "rgb(26, 32, 44)"
+                          lightBlue:
+                            type: string
+                            example: "rgb(34, 116, 172)"
+                  typography:
+                    type: object
+                    properties:
+                      primaryFont:
+                        type: string
+                        example: "Montserrat, sans-serif"
+                      secondaryFont:
+                        type: string
+                        example: "\"Gotham SSm A\", \"Gotham SSm B\", Montserrat, sans-serif"
+                      fallbackFont:
+                        type: string
+                        example: "Helvetica, Arial"
+                  spacing:
+                    type: object
+                    properties:
+                      xs:
+                        type: string
+                        example: "0.25rem"
+                      sm:
+                        type: string
+                        example: "0.5rem"
+                      md:
+                        type: string
+                        example: "1rem"
+                      lg:
+                        type: string
+                        example: "1.5rem"
+                      xl:
+                        type: string
+                        example: "2rem"
+
+  /api/component-variants:
+    get:
+      summary: Get component variants
+      description: Retrieve available component variants for Planet Labs styling
+      parameters:
+        - name: component
+          in: query
+          description: Component type to get variants for
+          required: false
+          schema:
+            type: string
+            enum: [button, card, input, select]
+      responses:
+        '200':
+          description: Component variants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  button:
+                    type: object
+                    properties:
+                      primary:
+                        type: object
+                        properties:
+                          background:
+                            type: string
+                            example: "rgb(0, 157, 165)"
+                          color:
+                            type: string
+                            example: "rgb(255, 255, 255)"
+                          hover:
+                            type: string
+                            example: "rgb(0, 127, 153)"
+                      secondary:
+                        type: object
+                        properties:
+                          background:
+                            type: string
+                            example: "rgb(0, 203, 230)"
+                          color:
+                            type: string
+                            example: "rgb(26, 32, 44)"
+                          hover:
+                            type: string
+                            example: "rgb(28, 190, 201)"
+                      outline:
+                        type: object
+                        properties:
+                          background:
+                            type: string
+                            example: "transparent"
+                          color:
+                            type: string
+                            example: "rgb(0, 157, 165)"
+                          border:
+                            type: string
+                            example: "rgb(0, 157, 165)"
+                          hover:
+                            type: string
+                            example: "rgb(0, 157, 165)"
+                  card:
+                    type: object
+                    properties:
+                      default:
+                        type: object
+                        properties:
+                          background:
+                            type: string
+                            example: "rgb(255, 255, 255)"
+                          border:
+                            type: string
+                            example: "rgb(226, 232, 240)"
+                          shadow:
+                            type: string
+                            example: "0 1px 3px rgba(0, 0, 0, 0.1)"
+                      elevated:
+                        type: object
+                        properties:
+                          background:
+                            type: string
+                            example: "rgb(255, 255, 255)"
+                          border:
+                            type: string
+                            example: "rgb(226, 232, 240)"
+                          shadow:
+                            type: string
+                            example: "0 4px 6px rgba(0, 0, 0, 0.1)"
+
+  /api/fonts:
+    get:
+      summary: Get font information
+      description: Retrieve font loading and fallback information
+      responses:
+        '200':
+          description: Font information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  primary:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Montserrat"
+                      url:
+                        type: string
+                        example: "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+                      weights:
+                        type: array
+                        items:
+                          type: string
+                        example: ["400", "500", "600", "700"]
+                  secondary:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Gotham SSm"
+                      url:
+                        type: string
+                        example: "https://fonts.googleapis.com/css2?family=Gotham+SSm:wght@400;500;600;700&display=swap"
+                      weights:
+                        type: array
+                        items:
+                          type: string
+                        example: ["400", "500", "600", "700"]
+                  fallback:
+                    type: string
+                    example: "Helvetica, Arial, sans-serif"
+
+components:
+  schemas:
+    DesignToken:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Token name
+        value:
+          type: string
+          description: Token value
+        category:
+          type: string
+          enum: [color, typography, spacing, shadow]
+          description: Token category
+        description:
+          type: string
+          description: Token description
+        example:
+          type: string
+          description: Usage example
+
+    ComponentVariant:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Variant name
+        styles:
+          type: object
+          additionalProperties:
+            type: string
+          description: CSS properties for this variant
+        description:
+          type: string
+          description: Variant description
+        usage:
+          type: string
+          description: When to use this variant
+
+    FontInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Font family name
+        url:
+          type: string
+          description: Font URL
+        weights:
+          type: array
+          items:
+            type: string
+          description: Available font weights
+        fallback:
+          type: string
+          description: Fallback font stack

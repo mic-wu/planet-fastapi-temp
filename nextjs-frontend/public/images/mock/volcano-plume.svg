@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs>
+    <linearGradient id="lava" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffb703"/>
+      <stop offset="45%" stop-color="#fb5607"/>
+      <stop offset="100%" stop-color="#8338ec"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="#1a1a2e" />
+  <path d="M120 420 L320 120 L520 420 Z" fill="url(#lava)" opacity="0.9"/>
+  <ellipse cx="320" cy="160" rx="160" ry="60" fill="#ffd166" opacity="0.4"/>
+  <text x="50%" y="82%" font-family="Inter, Arial, sans-serif" font-size="48" text-anchor="middle" fill="#ffffff" opacity="0.9">
+    Volcano Plume
+  </text>
+</svg>
