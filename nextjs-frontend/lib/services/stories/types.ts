@@ -7,11 +7,11 @@ export interface StoriesQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  category?: string;
+  category?: 'image' | 'video';
 }
 
 export interface StoriesService {
   getStories(params?: StoriesQueryParams): Promise<PaginatedResponse>;
   getStoryById(storyId: string): Promise<StoryRead>;
-  searchStories(query: string, category?: string): Promise<PaginatedResponse>;
+  searchStories(query: string, category?: 'image' | 'video'): Promise<PaginatedResponse>;
 }
