@@ -4,6 +4,7 @@ import "./globals.css";
 import "./fonts/fonts.css";
 import { TopNav } from "@/components/navigation/top-nav";
 import Chatbot from "@/components/ui/chatbot";
+import { HeroVisibilityProvider } from "@/lib/contexts/hero-visibility-context";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -33,9 +34,11 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head />
       <body className={`${montserrat.variable} ${inter.variable} font-sans`}>
-        <TopNav />
-        {children}
-        <Chatbot />
+        <HeroVisibilityProvider>
+          <TopNav />
+          {children}
+          <Chatbot />
+        </HeroVisibilityProvider>
       </body>
     </html>
   );

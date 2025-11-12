@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ui/theme-toggle";
+import { useHeroVisibility } from "@/lib/contexts/hero-visibility-context";
 
 export function TopNav() {
+  const { isVisible, toggle } = useHeroVisibility();
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background text-foreground">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -85,7 +88,21 @@ export function TopNav() {
           {/* Theme Toggle */}
           <ThemeToggle />
 
-          
+          {/* Hero Section Toggle */}
+          <button
+            type="button"
+            onClick={toggle}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border transition-colors hover:bg-primary/10 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            aria-label={isVisible ? "Hide hero section" : "Show hero section"}
+            title={isVisible ? "Hide hero section" : "Show hero section"}
+          >
+            {isVisible ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+
           {/* Help Icon */}
           <button
             type="button"
@@ -95,7 +112,6 @@ export function TopNav() {
           >
             <HelpCircle className="h-4 w-4" />
           </button>
-
         </div>
       </div>
     </nav>
