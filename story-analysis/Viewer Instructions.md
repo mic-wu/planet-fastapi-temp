@@ -10,6 +10,13 @@ pnpm i
 pnpm run dev
 ```
 
+Backend Data:
+
+- obtain story json file via download or via `scrape.py`
+- preprocess with `preprocess.py`
+  - (this might be hooked up incorrectly right now)
+- move output file into `viewer-server/data`
+
 Backend:
 
 ```bash
