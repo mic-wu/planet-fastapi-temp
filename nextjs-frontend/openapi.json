@@ -1312,8 +1312,8 @@
       "StoryCategory": {
         "type": "string",
         "enum": [
-          "optical",
-          "radar"
+          "image",
+          "video"
         ],
         "title": "StoryCategory"
       },

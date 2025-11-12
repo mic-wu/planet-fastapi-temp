@@ -73,7 +73,7 @@ export type PaginatedStoriesResponse = {
   has_more: boolean;
 };
 
-export type StoryCategory = "optical" | "radar";
+export type StoryCategory = "image" | "video";
 
 export type StoryCreate = {
   story_id: string;
