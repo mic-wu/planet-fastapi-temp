@@ -3,7 +3,7 @@ import type {
   StoryRead,
 } from "@/app/openapi-client/types.gen";
 import type { StoriesQueryParams } from "@/lib/services/stories/types";
-import { formatToCategory } from "@/lib/utils/storyFormat";
+import { formatToCategory, type StoryFormat } from "@/lib/utils/storyFormat";
 import { generateStoryUrls } from "@/lib/utils/storyUrls";
 
 // Mock stories with format field (as they would come from API)
@@ -137,7 +137,9 @@ const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
  * Note: Category is derived in components from format, not set here
  */
 function enrichMockStory(story: StoryRead & { format?: string }): StoryRead {
-  const format = story.format || story.story_metadata?.format as string || 'raw';
+  const formatValue = story.format || story.story_metadata?.format as string || 'raw';
+  // Ensure format is a valid StoryFormat type
+  const format: StoryFormat = formatValue === "mp4" ? "mp4" : "raw";
   
   // Generate URLs from format + id
   const urls = generateStoryUrls(story.id, format);

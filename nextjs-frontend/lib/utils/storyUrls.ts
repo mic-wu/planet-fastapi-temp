@@ -2,6 +2,8 @@
  * Utility functions for generating story image/video URLs
  */
 
+import type { StoryFormat } from './storyFormat';
+
 export type StoryUrls = {
   thumbnail_url: string | null;
   image_url: string | null;
@@ -17,7 +19,7 @@ export type StoryUrls = {
  */
 export function generateStoryUrls(
   storyId: string,
-  format: string,
+  format: StoryFormat,
 ): StoryUrls {
   if (format === 'mp4') {
     return {
