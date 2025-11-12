@@ -16,7 +16,7 @@ const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
     description: "Vivid aurora curtains captured during a polar orbit pass.",
     image_url: null, // Will be generated
     thumbnail_url: null, // Will be generated
-    category: "optical", // Will be overridden by enrichment
+    category: "video", // Will be overridden by enrichment
     format: "mp4", // Video format
     story_metadata: {
       sensor: "PSX-Optic",
@@ -36,7 +36,7 @@ const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
     description: "Sunset light revealing wave-like dune formations.",
     image_url: null,
     thumbnail_url: null,
-    category: "optical",
+    category: "image",
     format: "raw", // Image format
     story_metadata: {
       sensor: "PSX-Optic",
@@ -56,7 +56,7 @@ const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
     description: "Synthetic aperture radar slice through a super-typhoon.",
     image_url: null,
     thumbnail_url: null,
-    category: "optical",
+    category: "image",
     format: "raw", // Image format
     story_metadata: {
       sensor: "PSX-Radar",
@@ -77,7 +77,7 @@ const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
       "Thermal signature of an eruption venting into the stratosphere.",
     image_url: null,
     thumbnail_url: null,
-    category: "optical",
+    category: "video",
     format: "mp4", // Video format
     story_metadata: {
       sensor: "PSX-Thermal",
@@ -97,7 +97,7 @@ const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
     description: "False-color composite highlighting canopy restoration zones.",
     image_url: null,
     thumbnail_url: null,
-    category: "optical",
+    category: "image",
     format: "raw", // Image format
     story_metadata: {
       sensor: "PSX-Multispectral",
@@ -117,7 +117,7 @@ const mockStoriesRaw: Array<StoryRead & { format?: string }> = [
     description: "Urban light network observed from geosynchronous orbit.",
     image_url: null,
     thumbnail_url: null,
-    category: "optical",
+    category: "video",
     format: "mp4", // Video format
     story_metadata: {
       sensor: "PSX-LowLight",

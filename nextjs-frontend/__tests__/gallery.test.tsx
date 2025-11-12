@@ -37,7 +37,7 @@ const mockStory: StoryRead = {
   description: "Test description",
   image_url: "https://example.com/image.jpg",
   thumbnail_url: "https://example.com/thumb.jpg",
-  category: "optical",
+  category: "image",
   story_metadata: { resolution: "30cm", sensor: "PSX-Optic" },
   user_id: null,
   created_at: new Date().toISOString(),
@@ -67,9 +67,11 @@ describe("Gallery Components", () => {
 
       expect(screen.getByText("Test Story")).toBeInTheDocument();
       expect(screen.getByText("Test Location")).toBeInTheDocument();
-      expect(screen.getByText("optical")).toBeInTheDocument();
+      expect(screen.getByText("image")).toBeInTheDocument();
       expect(screen.getByText("30cm")).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /view details/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /view details/i })
+      ).toBeInTheDocument();
     });
 
     it("calls onClick when the card is clicked", () => {
@@ -109,7 +111,9 @@ describe("Gallery Components", () => {
   });
 
   describe("StoryFilters", () => {
-    const renderStoryFilters = (overrides?: Partial<Parameters<typeof StoryFilters>[0]>) => {
+    const renderStoryFilters = (
+      overrides?: Partial<Parameters<typeof StoryFilters>[0]>
+    ) => {
       const defaultProps = {
         onSearchChange: jest.fn(),
         onCategoryChange: jest.fn(),
@@ -131,11 +135,11 @@ describe("Gallery Components", () => {
       renderStoryFilters();
 
       expect(
-        screen.getByPlaceholderText(/search stories/i),
+        screen.getByPlaceholderText(/search stories/i)
       ).toBeInTheDocument();
       expect(screen.getByText("All")).toBeInTheDocument();
-      expect(screen.getByText("Optical")).toBeInTheDocument();
-      expect(screen.getByText("Radar")).toBeInTheDocument();
+      expect(screen.getByText("Image")).toBeInTheDocument();
+      expect(screen.getByText("Video")).toBeInTheDocument();
     });
 
     it("calls onSearchChange when search input changes", async () => {
@@ -149,7 +153,7 @@ describe("Gallery Components", () => {
         () => {
           expect(onSearchChange).toHaveBeenCalledWith("test search");
         },
-        { timeout: 500 },
+        { timeout: 500 }
       );
     });
 
@@ -158,10 +162,10 @@ describe("Gallery Components", () => {
       const user = userEvent.setup();
       renderStoryFilters({ onCategoryChange });
 
-      await user.click(screen.getByText("Optical"));
+      await user.click(screen.getByText("Image"));
 
       await waitFor(() => {
-        expect(onCategoryChange).toHaveBeenCalledWith("optical");
+        expect(onCategoryChange).toHaveBeenCalledWith("image");
       });
     });
 
@@ -178,11 +182,11 @@ describe("Gallery Components", () => {
       });
 
       await user.click(
-        screen.getByRole("button", { name: /advanced filters/i }),
+        screen.getByRole("button", { name: /advanced filters/i })
       );
 
       await user.click(
-        screen.getByRole("combobox", { name: /sensor filter/i }),
+        screen.getByRole("combobox", { name: /sensor filter/i })
       );
       const sensorOption = await screen.findByRole("option", {
         name: "PSX-Radar",
@@ -194,7 +198,7 @@ describe("Gallery Components", () => {
       });
 
       await user.click(
-        screen.getByRole("combobox", { name: /resolution filter/i }),
+        screen.getByRole("combobox", { name: /resolution filter/i })
       );
       const resolutionOption = await screen.findByRole("option", {
         name: "≤ 1 m",
@@ -203,11 +207,13 @@ describe("Gallery Components", () => {
 
       await waitFor(() => {
         expect(onResolutionChange).toHaveBeenCalledWith(
-          "lte-1" as ResolutionFilterOption,
+          "lte-1" as ResolutionFilterOption
         );
       });
 
-      await user.click(screen.getByRole("button", { name: /clear advanced filters/i }));
+      await user.click(
+        screen.getByRole("button", { name: /clear advanced filters/i })
+      );
       expect(onClear).toHaveBeenCalled();
     });
   });
@@ -223,7 +229,7 @@ describe("Gallery Components", () => {
           activeStoryId={mockStory.id}
           onClose={handleClose}
           onChangeStory={jest.fn()}
-        />,
+        />
       );
 
       await waitFor(() => {
@@ -244,7 +250,7 @@ describe("Gallery Components", () => {
           activeStoryId={mockStory.id}
           onClose={handleClose}
           onChangeStory={jest.fn()}
-        />,
+        />
       );
 
       await waitFor(() => {
@@ -265,7 +271,7 @@ describe("Gallery Components", () => {
           activeStoryId={mockStory.id}
           onClose={jest.fn()}
           onChangeStory={jest.fn()}
-        />,
+        />
       );
 
       const detailLink = await screen.findByRole("link", {
@@ -292,11 +298,11 @@ describe("Gallery Components", () => {
           activeStoryId={mockStory.id}
           onClose={jest.fn()}
           onChangeStory={handleChange}
-        />,
+        />
       );
 
       await user.click(
-        screen.getByRole("button", { name: /view next story/i }),
+        screen.getByRole("button", { name: /view next story/i })
       );
 
       expect(handleChange).toHaveBeenCalledWith("second");
@@ -323,7 +329,7 @@ describe("Gallery Components", () => {
       render(<GalleryGrid initialData={mockInitialData} />);
 
       const searchInput = screen.getByPlaceholderText(
-        /search stories, locations, or descriptions/i,
+        /search stories, locations, or descriptions/i
       );
       fireEvent.change(searchInput, { target: { value: "aurora" } });
 
@@ -341,15 +347,15 @@ describe("Gallery Components", () => {
       render(<GalleryGrid initialData={mockInitialData} />);
 
       const user = userEvent.setup();
-      const radarTab = screen.getByText("Radar");
-      await user.click(radarTab);
+      const videoTab = screen.getByText("Video");
+      await user.click(videoTab);
 
       await waitFor(() => {
         expect(mockedGetStories).toHaveBeenLastCalledWith({
           page: 1,
           limit: 12,
           search: undefined,
-          category: "radar",
+          category: "video",
         });
       });
     });
@@ -376,32 +382,32 @@ describe("Gallery Components", () => {
       render(<GalleryGrid initialData={mockInitialData} />);
 
       const searchInput = screen.getByPlaceholderText(
-        /search stories, locations, or descriptions/i,
+        /search stories, locations, or descriptions/i
       );
       fireEvent.change(searchInput, { target: { value: "aurora" } });
 
       await waitFor(() => {
         expect(
           screen.getByText(
-            "Something went wrong while fetching stories. Please try again.",
-          ),
+            "Something went wrong while fetching stories. Please try again."
+          )
         ).toBeInTheDocument();
       });
     });
 
     it("filters stories using advanced sensor filter", async () => {
       const user = userEvent.setup();
-      const radarStory: StoryRead = {
+      const videoStory: StoryRead = {
         ...mockStory,
-        id: "radar-id",
-        story_id: "radar-story",
-        title: "Radar Story",
-        category: "radar",
+        id: "video-id",
+        story_id: "video-story",
+        title: "Video Story",
+        category: "video",
         story_metadata: { resolution: "1m", sensor: "PSX-Radar" },
       };
 
       const dataWithMultipleStories = {
-        data: [mockStory, radarStory],
+        data: [mockStory, videoStory],
         total: 2,
         page: 1,
         limit: 12,
@@ -411,11 +417,11 @@ describe("Gallery Components", () => {
       render(<GalleryGrid initialData={dataWithMultipleStories} />);
 
       await user.click(
-        screen.getByRole("button", { name: /advanced filters/i }),
+        screen.getByRole("button", { name: /advanced filters/i })
       );
 
       await user.click(
-        screen.getByRole("combobox", { name: /sensor filter/i }),
+        screen.getByRole("combobox", { name: /sensor filter/i })
       );
       const sensorOption = await screen.findByRole("option", {
         name: "PSX-Radar",
@@ -423,7 +429,7 @@ describe("Gallery Components", () => {
       await user.click(sensorOption);
 
       await waitFor(() => {
-        expect(screen.getByText("Radar Story")).toBeInTheDocument();
+        expect(screen.getByText("Video Story")).toBeInTheDocument();
         expect(screen.queryByText("Test Story")).not.toBeInTheDocument();
       });
     });

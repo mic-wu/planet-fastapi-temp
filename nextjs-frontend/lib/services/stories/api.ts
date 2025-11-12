@@ -21,21 +21,18 @@ const DEFAULT_PAGE = 1;
 function buildQuery(params: StoriesQueryParams = {}) {
   // Backend API accepts "image" | "video" as category filter
   // and maps them to format internally (image -> raw, video -> mp4)
-  // Note: OpenAPI types still expect "optical" | "radar" but backend accepts "image" | "video"
-  // The cast is only for TypeScript - at runtime, "image"/"video" strings are sent as-is
-  // TODO: Regenerate OpenAPI client after backend implements new schema
+  // OpenAPI types expect "image" | "video" which matches the backend
   return {
     page: params.page ?? DEFAULT_PAGE,
     limit: params.limit ?? DEFAULT_LIMIT,
     search: params.search,
-    // Cast for TypeScript compatibility - actual runtime value is "image" | "video" | null
-    category: params.category as 'optical' | 'radar' | null | undefined,
+    category: params.category as "image" | "video" | null | undefined,
   };
 }
 
 function ensureData<T>(
   response: { data?: T | undefined; error?: unknown },
-  context: string,
+  context: string
 ): T {
   const error = response.error as Record<string, unknown> | undefined;
 
@@ -62,8 +59,8 @@ function getStoryFormat(story: StoryRead): string {
   return (
     (story.story_metadata?.format as string | undefined) ||
     // Some legacy stories may have format at the top level
-    ((story as unknown as { format?: string }).format) ||
-    'raw'
+    (story as unknown as { format?: string }).format ||
+    "raw"
   );
 }
 
@@ -77,8 +74,8 @@ function enrichStory(story: StoryRead): StoryRead {
   // Note: We don't set category here because:
   // 1. API returns category as null (client-generated)
   // 2. Components derive category from format for display
-  // 3. The StoryRead type still expects "optical" | "radar" but we display "image" | "video"
-  // We keep the API's category field as-is (may be null or "optical"/"radar")
+  // 3. The StoryRead type expects "image" | "video" which matches our display categories
+  // We keep the API's category field as-is (may be null or "image"/"video")
   // Components will derive display category from format
 
   return {
@@ -94,7 +91,7 @@ function enrichStory(story: StoryRead): StoryRead {
  * Enrich paginated response with client-generated fields
  */
 function enrichPaginatedResponse(
-  response: PaginatedResponse,
+  response: PaginatedResponse
 ): PaginatedResponse {
   return {
     ...response,
@@ -103,7 +100,7 @@ function enrichPaginatedResponse(
 }
 
 async function getStoriesFromApi(
-  params: StoriesQueryParams = {},
+  params: StoriesQueryParams = {}
 ): Promise<PaginatedResponse> {
   const response = await getStoriesApi({
     query: buildQuery(params),
@@ -111,7 +108,7 @@ async function getStoriesFromApi(
 
   const data = ensureData<PaginatedResponse>(
     response,
-    "Failed to fetch stories",
+    "Failed to fetch stories"
   );
 
   // Enrich stories with client-generated fields
@@ -125,7 +122,7 @@ async function getStoryByIdFromApi(storyId: string) {
 
   const story = ensureData<StoryRead>(
     response,
-    `Failed to fetch story "${storyId}"`,
+    `Failed to fetch story "${storyId}"`
   );
 
   // Enrich story with client-generated fields
