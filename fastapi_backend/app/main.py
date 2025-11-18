@@ -45,7 +45,7 @@ async def root():
             "docs": "/docs"
         }
     }
-
+ 
 
 @app.get("/health", tags=["health"])
 async def health_check():
