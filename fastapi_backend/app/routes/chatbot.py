@@ -1,8 +1,7 @@
 """Chatbot API routes using FastMCP."""
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import Any
+from app.schemas import ChatRequest, ChatResponse
 from app.mcp_server import (
     get_current_time_impl,
     get_app_info_impl,
@@ -11,19 +10,6 @@ from app.mcp_server import (
 )
 
 router = APIRouter()
-
-
-class ChatRequest(BaseModel):
-    """Request model for chat messages."""
-    message: str
-    context: dict[str, Any] | None = None
-
-
-class ChatResponse(BaseModel):
-    """Response model for chat messages."""
-    response: str
-    tool_used: str | None = None
-    metadata: dict[str, Any] | None = None
 
 
 @router.post("/chat", response_model=ChatResponse)
